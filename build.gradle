@@ -4,26 +4,8 @@ subprojects {
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
     compileJava.options.encoding = "UTF-8"
 
-    configurations {
-        include
-
-        implementation.extendsFrom include
-        api.extendsFrom include
-    }
-
     repositories {
         mavenCentral()
     }
 
-    jar {
-        dependsOn configurations.include
-        from {
-            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-            configurations.include.collect {
-                zipTree(it)
-            }
-        } {
-            exclude "META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"
-        }
-    }
 }
