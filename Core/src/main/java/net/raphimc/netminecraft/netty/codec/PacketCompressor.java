@@ -1,0 +1,90 @@
+package net.raphimc.netminecraft.netty.codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.DecoderException;
+import net.raphimc.netminecraft.constants.MCPipeline;
+import net.raphimc.netminecraft.packet.PacketByteBuf;
+
+import java.util.List;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
+
+public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
+
+    private final byte[] deflateBuffer = new byte[8192];
+
+    // only allocated if needed
+    private Deflater deflater;
+    private Inflater inflater;
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        super.handlerRemoved(ctx);
+
+        if (this.inflater != null) this.inflater.end();
+        if (this.deflater != null) this.deflater.end();
+    }
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+        if (ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get() < 0) {
+            out.add(in.readBytes(in.readableBytes()));
+            return;
+        }
+
+        if (this.inflater == null) this.inflater = new Inflater();
+
+        if (in.readableBytes() != 0) {
+            final int uncompressedLength = new PacketByteBuf(in).readVarInt();
+            if (uncompressedLength == 0) {
+                out.add(in.readBytes(in.readableBytes()));
+            } else {
+                if (uncompressedLength < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
+                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is below server threshold of " + ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get());
+                }
+                if (uncompressedLength > 2097152) {
+                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is larger than protocol maximum of " + 2097152);
+                }
+
+                final byte[] compressedData = new byte[in.readableBytes()];
+                in.readBytes(compressedData);
+                this.inflater.setInput(compressedData);
+                final byte[] uncompressedData = new byte[uncompressedLength];
+                this.inflater.inflate(uncompressedData);
+                out.add(in.alloc().buffer().writeBytes(uncompressedData));
+                this.inflater.reset();
+            }
+        }
+    }
+
+    @Override
+    protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
+        if (ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get() < 0) {
+            out.writeBytes(in);
+            return;
+        }
+
+        if (this.deflater == null) this.deflater = new Deflater();
+
+        final int packetSize = in.readableBytes();
+        final PacketByteBuf packetByteBuf = new PacketByteBuf(out);
+        if (packetSize < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
+            packetByteBuf.writeVarInt(0);
+            out.writeBytes(in);
+        } else {
+            final byte[] uncompressedData = new byte[packetSize];
+            in.readBytes(uncompressedData);
+            packetByteBuf.writeVarInt(uncompressedData.length);
+            this.deflater.setInput(uncompressedData, 0, packetSize);
+            this.deflater.finish();
+
+            while (!this.deflater.finished()) {
+                out.writeBytes(this.deflateBuffer, 0, this.deflater.deflate(this.deflateBuffer));
+            }
+            this.deflater.reset();
+        }
+    }
+
+}

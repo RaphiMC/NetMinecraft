@@ -1,0 +1,68 @@
+package net.raphimc.netminecraft.netty.codec;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.handler.codec.DecoderException;
+import net.raphimc.netminecraft.netty.sizer.VarIntByteDecoder;
+import net.raphimc.netminecraft.packet.PacketByteBuf;
+
+import java.util.List;
+
+import static net.raphimc.netminecraft.netty.sizer.VarIntByteDecoder.DecodeResult;
+
+// https://github.com/VelocityPowered/Velocity/blob/dev/3.0.0/proxy/src/main/java/com/velocitypowered/proxy/protocol/netty/MinecraftVarintFrameDecoder.java
+public class OptimizedPacketSizer extends ByteToMessageCodec<ByteBuf> {
+
+    @Override
+    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+        if (!ctx.channel().isActive()) {
+            in.clear();
+            return;
+        }
+
+        final VarIntByteDecoder reader = new VarIntByteDecoder();
+
+        int varintEnd = in.forEachByte(reader);
+        if (varintEnd == -1) {
+            // We tried to go beyond the end of the buffer. This is probably a good sign that the
+            // buffer was too short to hold a proper varint.
+            if (reader.getResult() == DecodeResult.RUN_OF_ZEROES) {
+                // Special case where the entire packet is just a run of zeroes. We ignore them all.
+                in.clear();
+            }
+            return;
+        }
+
+        if (reader.getResult() == DecodeResult.RUN_OF_ZEROES) {
+            // this will return to the point where the next varint starts
+            in.readerIndex(varintEnd);
+        } else if (reader.getResult() == DecodeResult.SUCCESS) {
+            int readVarint = reader.getReadVarint();
+            int bytesRead = reader.getBytesRead();
+            if (readVarint < 0) {
+                in.clear();
+                throw new DecoderException("Bad packet length");
+            } else if (readVarint == 0) {
+                // skip over the empty packet(s) and ignore it
+                in.readerIndex(varintEnd + 1);
+            } else {
+                int minimumRead = bytesRead + readVarint;
+                if (in.isReadable(minimumRead)) {
+                    out.add(in.retainedSlice(varintEnd + 1, readVarint));
+                    in.skipBytes(minimumRead);
+                }
+            }
+        } else if (reader.getResult() == DecodeResult.TOO_BIG) {
+            in.clear();
+            throw new DecoderException("VarInt too big");
+        }
+    }
+
+    @Override
+    protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
+        new PacketByteBuf(out).writeVarInt(in.readableBytes());
+        out.writeBytes(in);
+    }
+
+}
