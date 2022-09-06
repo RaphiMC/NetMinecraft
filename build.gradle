@@ -53,6 +53,6 @@ allprojects {
 }
 
 dependencies {
-    implementation project(":Core")
-    implementation project(":Packets")
+    api project(":Core")
+    api project(":Packets")
 }
