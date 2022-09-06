@@ -1,11 +1,58 @@
-subprojects {
+allprojects {
     apply plugin: "java-library"
+    apply plugin: "maven-publish"
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
     compileJava.options.encoding = "UTF-8"
 
+    group = project.maven_group
+    archivesBaseName = project.maven_name
+    version = project.maven_version
+    if (!project.maven_group) group = rootProject.maven_group
+    if (!project.maven_name) archivesBaseName = rootProject.maven_name
+    if (!project.maven_version) version = rootProject.maven_version
+
     repositories {
         mavenCentral()
+        maven {
+            name = "Jitpack"
+            url = "https://jitpack.io"
+        }
     }
 
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = "Reposilite"
+                url = "https://maven.lenni0451.net/releases"
+                credentials {
+                    username = "${System.env.REPOSILITE_USERNAME}"
+                    password = "${System.env.REPOSILITE_PASSWORD}"
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+        publications {
+            maven(MavenPublication) {
+                groupId = project.maven_group
+                artifactId = project.maven_name
+                version = project.maven_version
+
+                from components.java
+            }
+        }
+    }
+
+}
+
+dependencies {
+    implementation project(":Core")
+    implementation project(":Packets")
 }

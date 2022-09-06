@@ -49,6 +49,7 @@ public abstract class PacketRegistry {
         else return C2S_ID_PACKET_REGISTRY.getOrDefault(packetId, UnknownPacket::new).get();
     }
 
+    @SuppressWarnings("unchecked")
     public final Class<? extends IPacket> getTargetClassByPacket(final Class<? extends IPacket> packetClass) {
         Class<?> clazz = packetClass;
         do {

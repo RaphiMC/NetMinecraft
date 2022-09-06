@@ -192,7 +192,6 @@ public class PacketByteBuf extends ByteBuf {
      *
      * @param array the array to write
      * @return this buf, for chaining
-     * @implNote An int array has the same format as a list of ints.
      * @see #readIntArray(int)
      * @see #writeIntArray(int[])
      */
@@ -210,7 +209,6 @@ public class PacketByteBuf extends ByteBuf {
      * does not have a length limit.
      *
      * @return the read byte array
-     * @implNote An int array has the same format as a list of ints.
      * @see #readIntArray(int)
      * @see #writeIntArray(int[])
      */
@@ -227,7 +225,6 @@ public class PacketByteBuf extends ByteBuf {
      * @return the read byte array
      * @throws io.netty.handler.codec.DecoderException if the read array has a
      *                                                 length over {@code maxSize}
-     * @implNote An int array has the same format as a list of ints.
      * @see #readIntArray()
      * @see #writeIntArray(int[])
      */
