@@ -1,5 +1,7 @@
 package net.raphimc.netminecraft.packet;
 
+import io.netty.buffer.ByteBuf;
+
 public class UnknownPacket implements IPacket {
 
     public int packetId;
@@ -14,13 +16,13 @@ public class UnknownPacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.data = buf.readReadableBytes();
+    public void read(ByteBuf byteBuf) {
+        this.data = PacketTypes.readReadableBytes(byteBuf);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeBytes(this.data);
+    public void write(ByteBuf byteBuf) {
+        byteBuf.writeBytes(this.data);
     }
 
 }

@@ -1,7 +1,8 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 public class C2SLoginHelloPacket1_7 implements IPacket {
 
@@ -15,13 +16,13 @@ public class C2SLoginHelloPacket1_7 implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.name = buf.readString(16);
+    public void read(ByteBuf byteBuf) {
+        this.name = PacketTypes.readString(byteBuf, 16);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeString(this.name);
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeString(byteBuf, this.name);
     }
 
 }

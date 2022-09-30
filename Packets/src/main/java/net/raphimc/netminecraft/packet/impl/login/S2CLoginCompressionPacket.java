@@ -1,7 +1,8 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 public class S2CLoginCompressionPacket implements IPacket {
 
@@ -15,13 +16,13 @@ public class S2CLoginCompressionPacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.compressionThreshold = buf.readVarInt();
+    public void read(ByteBuf byteBuf) {
+        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeVarInt(this.compressionThreshold);
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
     }
 
 }

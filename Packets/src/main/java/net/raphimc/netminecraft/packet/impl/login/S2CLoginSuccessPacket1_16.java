@@ -1,6 +1,7 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.util.UUID;
 
@@ -14,15 +15,15 @@ public class S2CLoginSuccessPacket1_16 extends S2CLoginSuccessPacket1_7_6 {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.uuid = this.uuidFromIntArray(new int[]{buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt()});
-        this.name = buf.readString(16);
+    public void read(ByteBuf byteBuf) {
+        this.uuid = this.uuidFromIntArray(new int[]{byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt()});
+        this.name = PacketTypes.readString(byteBuf, 16);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        for (int i : this.uuidToIntArray(this.uuid)) buf.writeInt(i);
-        buf.writeString(this.name);
+    public void write(ByteBuf byteBuf) {
+        for (int i : this.uuidToIntArray(this.uuid)) byteBuf.writeInt(i);
+        PacketTypes.writeString(byteBuf, this.name);
     }
 
     protected UUID uuidFromIntArray(final int[] ints) {

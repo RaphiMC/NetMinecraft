@@ -1,7 +1,8 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 public class S2CLoginDisconnectPacket implements IPacket {
 
@@ -15,13 +16,13 @@ public class S2CLoginDisconnectPacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.reason = buf.readString(262144);
+    public void read(ByteBuf byteBuf) {
+        this.reason = PacketTypes.readString(byteBuf, 262144);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeString(this.reason);
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeString(byteBuf, this.reason);
     }
 
 }

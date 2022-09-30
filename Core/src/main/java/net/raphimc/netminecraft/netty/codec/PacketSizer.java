@@ -5,7 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.CorruptedFrameException;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.util.List;
 
@@ -24,16 +24,16 @@ public class PacketSizer extends ByteToMessageCodec<ByteBuf> {
 
             bytes[i] = in.readByte();
             if (bytes[i] >= 0) {
-                final PacketByteBuf packetByteBuf = new PacketByteBuf(Unpooled.wrappedBuffer(bytes));
+                final ByteBuf buf = Unpooled.wrappedBuffer(bytes);
                 try {
-                    int packetLength = packetByteBuf.readVarInt();
+                    final int packetLength = PacketTypes.readVarInt(buf);
                     if (in.readableBytes() < packetLength) {
                         in.resetReaderIndex();
                         return;
                     }
                     out.add(in.readBytes(packetLength));
                 } finally {
-                    packetByteBuf.release();
+                    buf.release();
                 }
                 return;
             }
@@ -44,12 +44,12 @@ public class PacketSizer extends ByteToMessageCodec<ByteBuf> {
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
         final int packetLength = in.readableBytes();
-        final int varIntLength = PacketByteBuf.getVarIntLength(packetLength);
+        final int varIntLength = PacketTypes.getVarIntLength(packetLength);
         if (varIntLength > 3) {
             throw new IllegalArgumentException("Unable to fit " + packetLength + " into " + 3);
         } else {
             out.ensureWritable(varIntLength + packetLength);
-            new PacketByteBuf(out).writeVarInt(packetLength);
+            PacketTypes.writeVarInt(out, packetLength);
             out.writeBytes(in, in.readerIndex(), packetLength);
         }
     }

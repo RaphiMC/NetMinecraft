@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.DecoderException;
 import net.raphimc.netminecraft.constants.MCPipeline;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.util.List;
 import java.util.zip.Deflater;
@@ -37,7 +37,7 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
         if (this.inflater == null) this.inflater = new Inflater();
 
         if (in.readableBytes() != 0) {
-            final int uncompressedLength = new PacketByteBuf(in).readVarInt();
+            final int uncompressedLength = PacketTypes.readVarInt(in);
             if (uncompressedLength == 0) {
                 out.add(in.readBytes(in.readableBytes()));
             } else {
@@ -69,14 +69,13 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
         if (this.deflater == null) this.deflater = new Deflater();
 
         final int packetSize = in.readableBytes();
-        final PacketByteBuf packetByteBuf = new PacketByteBuf(out);
         if (packetSize < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
-            packetByteBuf.writeVarInt(0);
+            PacketTypes.writeVarInt(out, 0);
             out.writeBytes(in);
         } else {
             final byte[] uncompressedData = new byte[packetSize];
             in.readBytes(uncompressedData);
-            packetByteBuf.writeVarInt(uncompressedData.length);
+            PacketTypes.writeVarInt(out, uncompressedData.length);
             this.deflater.setInput(uncompressedData, 0, packetSize);
             this.deflater.finish();
 

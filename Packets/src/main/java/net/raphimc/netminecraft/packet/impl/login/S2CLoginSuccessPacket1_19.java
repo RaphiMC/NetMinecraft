@@ -1,6 +1,7 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.util.*;
 
@@ -17,33 +18,33 @@ public class S2CLoginSuccessPacket1_19 extends S2CLoginSuccessPacket1_16 {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.uuid = this.uuidFromIntArray(new int[]{buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt()});
-        this.name = buf.readString(16);
-        final int count = buf.readVarInt();
+    public void read(ByteBuf byteBuf) {
+        this.uuid = this.uuidFromIntArray(new int[]{byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt()});
+        this.name = PacketTypes.readString(byteBuf, 16);
+        final int count = PacketTypes.readVarInt(byteBuf);
         this.properties = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            final String name = buf.readString(Short.MAX_VALUE);
-            final String value = buf.readString(Short.MAX_VALUE);
+            final String name = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+            final String value = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
             String signature = null;
-            if (buf.readBoolean()) {
-                signature = buf.readString(Short.MAX_VALUE);
+            if (byteBuf.readBoolean()) {
+                signature = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
             }
             this.properties.add(new String[]{name, value, signature});
         }
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        for (int i : this.uuidToIntArray(this.uuid)) buf.writeInt(i);
-        buf.writeString(this.name);
-        buf.writeVarInt(this.properties.size());
+    public void write(ByteBuf byteBuf) {
+        for (int i : this.uuidToIntArray(this.uuid)) byteBuf.writeInt(i);
+        PacketTypes.writeString(byteBuf, this.name);
+        PacketTypes.writeVarInt(byteBuf, this.properties.size());
         for (String[] property : this.properties) {
-            buf.writeString(property[0]);
-            buf.writeString(property[1]);
-            buf.writeBoolean(property[2] != null);
+            PacketTypes.writeString(byteBuf, property[0]);
+            PacketTypes.writeString(byteBuf, property[1]);
+            byteBuf.writeBoolean(property[2] != null);
             if (property[2] != null) {
-                buf.writeString(property[2]);
+                PacketTypes.writeString(byteBuf, property[2]);
             }
         }
     }

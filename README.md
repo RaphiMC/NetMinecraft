@@ -1,5 +1,5 @@
 # NetMinecraft
-Easy to use low-level networking library for Minecraft. Currently 1.7.x does not work.\
+Easy to use low-level networking library for Minecraft.\
 Documentation is non-existent yet, but will be soon™.
 
 ## Usage

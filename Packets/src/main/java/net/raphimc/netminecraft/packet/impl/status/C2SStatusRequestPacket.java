@@ -1,7 +1,7 @@
 package net.raphimc.netminecraft.packet.impl.status;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
 
 public class C2SStatusRequestPacket implements IPacket {
 
@@ -9,11 +9,11 @@ public class C2SStatusRequestPacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
+    public void read(ByteBuf byteBuf) {
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
+    public void write(ByteBuf byteBuf) {
     }
 
 }

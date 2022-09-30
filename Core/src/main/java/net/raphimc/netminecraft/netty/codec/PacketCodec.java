@@ -14,16 +14,15 @@ public class PacketCodec extends ByteToMessageCodec<IPacket> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         if (ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get() == null) {
-            out.add(new PacketByteBuf(in.readBytes(in.readableBytes())));
+            out.add(in.readBytes(in.readableBytes()));
             return;
         }
 
         if (in.readableBytes() != 0) {
-            final PacketByteBuf packetByteBuf = new PacketByteBuf(in);
-            final int packetId = packetByteBuf.readVarInt();
+            final int packetId = PacketTypes.readVarInt(in);
             final IPacket packet = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getPacketById(packetId);
             if (packet instanceof UnknownPacket) ((UnknownPacket) packet).packetId = packetId;
-            packet.read(packetByteBuf);
+            packet.read(in);
             out.add(packet);
         }
     }
@@ -47,10 +46,8 @@ public class PacketCodec extends ByteToMessageCodec<IPacket> {
         int packetId = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getIdByPacket(targetClass);
         if (in instanceof UnknownPacket) packetId = ((UnknownPacket) in).packetId;
 
-        final PacketByteBuf packetByteBuf = new PacketByteBuf();
-        packetByteBuf.writeVarInt(packetId);
-        in.write(packetByteBuf);
-        out.writeBytes(packetByteBuf);
+        PacketTypes.writeVarInt(out, packetId);
+        in.write(out);
     }
 
 }

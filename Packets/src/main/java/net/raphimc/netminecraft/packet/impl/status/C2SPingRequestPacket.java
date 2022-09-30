@@ -1,7 +1,7 @@
 package net.raphimc.netminecraft.packet.impl.status;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
 
 public class C2SPingRequestPacket implements IPacket {
 
@@ -15,13 +15,13 @@ public class C2SPingRequestPacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.startTime = buf.readLong();
+    public void read(ByteBuf byteBuf) {
+        this.startTime = byteBuf.readLong();
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeLong(this.startTime);
+    public void write(ByteBuf byteBuf) {
+        byteBuf.writeLong(this.startTime);
     }
 
 }

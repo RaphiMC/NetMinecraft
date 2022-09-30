@@ -1,7 +1,8 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 public class C2SLoginKeyPacket1_7 implements IPacket {
 
@@ -17,15 +18,15 @@ public class C2SLoginKeyPacket1_7 implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.encryptedSecretKey = buf.readByteArray();
-        this.encryptedNonce = buf.readByteArray();
+    public void read(ByteBuf byteBuf) {
+        this.encryptedSecretKey = PacketTypes.readShortByteArray(byteBuf);
+        this.encryptedNonce = PacketTypes.readShortByteArray(byteBuf);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeByteArray(this.encryptedSecretKey);
-        buf.writeByteArray(this.encryptedNonce);
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeShortByteArray(byteBuf, this.encryptedSecretKey);
+        PacketTypes.writeShortByteArray(byteBuf, this.encryptedNonce);
     }
 
 }

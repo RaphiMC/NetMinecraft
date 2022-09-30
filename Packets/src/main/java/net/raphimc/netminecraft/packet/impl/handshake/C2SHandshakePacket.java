@@ -1,8 +1,9 @@
 package net.raphimc.netminecraft.packet.impl.handshake;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.constants.ConnectionState;
 import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 public class C2SHandshakePacket implements IPacket {
 
@@ -22,19 +23,19 @@ public class C2SHandshakePacket implements IPacket {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.protocolVersion = buf.readVarInt();
-        this.address = buf.readString(255);
-        this.port = buf.readUnsignedShort();
-        this.intendedState = ConnectionState.getById(buf.readVarInt());
+    public void read(ByteBuf byteBuf) {
+        this.protocolVersion = PacketTypes.readVarInt(byteBuf);
+        this.address = PacketTypes.readString(byteBuf, 255);
+        this.port = byteBuf.readUnsignedShort();
+        this.intendedState = ConnectionState.getById(PacketTypes.readVarInt(byteBuf));
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        buf.writeVarInt(this.protocolVersion);
-        buf.writeString(this.address);
-        buf.writeShort(this.port);
-        buf.writeVarInt(this.intendedState.getId());
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeVarInt(byteBuf, this.protocolVersion);
+        PacketTypes.writeString(byteBuf, this.address);
+        byteBuf.writeShort(this.port);
+        PacketTypes.writeVarInt(byteBuf, this.intendedState.getId());
     }
 
 }

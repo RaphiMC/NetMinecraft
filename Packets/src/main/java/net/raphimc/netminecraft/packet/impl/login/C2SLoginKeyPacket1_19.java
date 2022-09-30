@@ -1,8 +1,9 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SLoginKeyPacket1_19 extends C2SLoginKeyPacket1_7 {
+public class C2SLoginKeyPacket1_19 extends C2SLoginKeyPacket1_8 {
 
     public Long salt;
     public byte[] signature;
@@ -21,26 +22,26 @@ public class C2SLoginKeyPacket1_19 extends C2SLoginKeyPacket1_7 {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.encryptedSecretKey = buf.readByteArray();
-        if (!buf.readBoolean()) {
-            this.salt = buf.readLong();
-            this.signature = buf.readByteArray();
+    public void read(ByteBuf byteBuf) {
+        this.encryptedSecretKey = PacketTypes.readByteArray(byteBuf);
+        if (!byteBuf.readBoolean()) {
+            this.salt = byteBuf.readLong();
+            this.signature = PacketTypes.readByteArray(byteBuf);
         } else {
-            this.encryptedNonce = buf.readByteArray();
+            this.encryptedNonce = PacketTypes.readByteArray(byteBuf);
         }
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
+    public void write(ByteBuf byteBuf) {
         final boolean isSigned = this.salt != null && this.signature != null;
-        buf.writeByteArray(this.encryptedSecretKey);
-        buf.writeBoolean(!isSigned);
+        PacketTypes.writeByteArray(byteBuf, this.encryptedSecretKey);
+        byteBuf.writeBoolean(!isSigned);
         if (isSigned) {
-            buf.writeLong(this.salt);
-            buf.writeByteArray(this.signature);
+            byteBuf.writeLong(this.salt);
+            PacketTypes.writeByteArray(byteBuf, this.signature);
         } else {
-            buf.writeByteArray(this.encryptedNonce);
+            PacketTypes.writeByteArray(byteBuf, this.encryptedNonce);
         }
     }
 

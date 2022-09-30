@@ -1,9 +1,11 @@
 package net.raphimc.netminecraft.packet;
 
+import io.netty.buffer.ByteBuf;
+
 public interface IPacket {
 
-    void read(final PacketByteBuf buf);
+    void read(final ByteBuf byteBuf);
 
-    void write(final PacketByteBuf buf);
+    void write(final ByteBuf byteBuf);
 
 }

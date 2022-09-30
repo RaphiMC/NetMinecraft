@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.DecoderException;
 import net.raphimc.netminecraft.netty.sizer.VarIntByteDecoder;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class OptimizedPacketSizer extends ByteToMessageCodec<ByteBuf> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
-        new PacketByteBuf(out).writeVarInt(in.readableBytes());
+        PacketTypes.writeVarInt(out, in.readableBytes());
         out.writeBytes(in);
     }
 

@@ -1,6 +1,7 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.security.PublicKey;
 import java.time.Instant;
@@ -27,17 +28,17 @@ public class C2SLoginHelloPacket1_19_1 extends C2SLoginHelloPacket1_19 {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        super.read(buf);
-        if (buf.readBoolean()) this.uuid = buf.readUuid();
+    public void read(ByteBuf byteBuf) {
+        super.read(byteBuf);
+        if (byteBuf.readBoolean()) this.uuid = PacketTypes.readUuid(byteBuf);
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
-        super.write(buf);
-        buf.writeBoolean(this.uuid != null);
+    public void write(ByteBuf byteBuf) {
+        super.write(byteBuf);
+        byteBuf.writeBoolean(this.uuid != null);
         if (this.uuid != null) {
-            buf.writeUuid(this.uuid);
+            PacketTypes.writeUuid(byteBuf, this.uuid);
         }
     }
 

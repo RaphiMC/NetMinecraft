@@ -1,7 +1,8 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
+import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.netty.crypto.CryptUtil;
-import net.raphimc.netminecraft.packet.PacketByteBuf;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
 import java.security.PublicKey;
 import java.time.Instant;
@@ -27,24 +28,24 @@ public class C2SLoginHelloPacket1_19 extends C2SLoginHelloPacket1_7 {
     }
 
     @Override
-    public void read(PacketByteBuf buf) {
-        this.name = buf.readString(16);
-        if (buf.readBoolean()) {
-            this.expiresAt = Instant.ofEpochMilli(buf.readLong());
-            this.key = CryptUtil.decodeRsaPublicKey(buf.readByteArray(512));
-            this.keySignature = buf.readByteArray(4096);
+    public void read(ByteBuf byteBuf) {
+        this.name = PacketTypes.readString(byteBuf, 16);
+        if (byteBuf.readBoolean()) {
+            this.expiresAt = Instant.ofEpochMilli(byteBuf.readLong());
+            this.key = CryptUtil.decodeRsaPublicKey(PacketTypes.readByteArray(byteBuf, 512));
+            this.keySignature = PacketTypes.readByteArray(byteBuf, 4096);
         }
     }
 
     @Override
-    public void write(PacketByteBuf buf) {
+    public void write(ByteBuf byteBuf) {
         final boolean hasKeyData = this.expiresAt != null && this.key != null && this.keySignature != null;
-        buf.writeString(this.name);
-        buf.writeBoolean(hasKeyData);
+        PacketTypes.writeString(byteBuf, this.name);
+        byteBuf.writeBoolean(hasKeyData);
         if (hasKeyData) {
-            buf.writeLong(this.expiresAt.toEpochMilli());
-            buf.writeByteArray(this.key.getEncoded());
-            buf.writeByteArray(this.keySignature);
+            byteBuf.writeLong(this.expiresAt.toEpochMilli());
+            PacketTypes.writeByteArray(byteBuf, this.key.getEncoded());
+            PacketTypes.writeByteArray(byteBuf, this.keySignature);
         }
     }
 
