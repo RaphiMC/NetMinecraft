@@ -28,12 +28,9 @@ allprojects {
     publishing {
         repositories {
             maven {
-                name = "Reposilite"
+                name = "reposilite"
                 url = "https://maven.lenni0451.net/releases"
-                credentials {
-                    username = "${System.env.REPOSILITE_USERNAME}"
-                    password = "${System.env.REPOSILITE_PASSWORD}"
-                }
+                credentials(PasswordCredentials)
                 authentication {
                     basic(BasicAuthentication)
                 }
