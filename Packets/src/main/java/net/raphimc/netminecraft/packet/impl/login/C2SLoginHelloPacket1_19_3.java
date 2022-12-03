@@ -24,6 +24,10 @@ public class C2SLoginHelloPacket1_19_3 extends C2SLoginHelloPacket1_19_1 {
         super(name, expiresAt, key, keySignature, uuid);
     }
 
+    public C2SLoginHelloPacket1_19_3(final String name, final UUID uuid) {
+        super(name, null, null, null, uuid);
+    }
+
     @Override
     public void read(ByteBuf byteBuf) {
         this.name = PacketTypes.readString(byteBuf, 16);
@@ -32,7 +36,7 @@ public class C2SLoginHelloPacket1_19_3 extends C2SLoginHelloPacket1_19_1 {
 
     @Override
     public void write(ByteBuf byteBuf) {
-        this.name = PacketTypes.readString(byteBuf, 16);
+        PacketTypes.writeString(byteBuf, this.name);
         byteBuf.writeBoolean(this.uuid != null);
         if (this.uuid != null) {
             PacketTypes.writeUuid(byteBuf, this.uuid);
