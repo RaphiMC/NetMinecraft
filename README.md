@@ -3,7 +3,7 @@ Easy to use low-level networking library for Minecraft.
 
 ## Releases
 ### Gradle/Maven
-To use ClassTransform with Gradle/Maven you can use this [maven server](https://maven.lenni0451.net/#/releases/net/raphimc/netminecraft/) or [Jitpack](https://jitpack.io/#RaphiMC/NetMinecraft).  
+To use NetMinecraft with Gradle/Maven you can use this [maven server](https://maven.lenni0451.net/#/releases/net/raphimc/netminecraft/) or [Jitpack](https://jitpack.io/#RaphiMC/NetMinecraft).  
 You can also find instructions how to implement it into your build script there.
 
 ### Jar File
