@@ -1,13 +1,18 @@
 package net.raphimc.netminecraft.netty.crypto;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.function.Function;
 
 public class CryptUtil {
 
@@ -61,9 +66,32 @@ public class CryptUtil {
         }
     }
 
+    private static PrivateKey decodeRsaPrivateKey(final byte[] key) {
+        try {
+            final EncodedKeySpec encodedKeySpec = new PKCS8EncodedKeySpec(key);
+            final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(encodedKeySpec);
+        } catch (Throwable e) {
+            throw new IllegalStateException("Failed to decode RSA private key", e);
+        }
+    }
+
+    public static PublicKey decodeRsaPublicKeyPem(final String key) {
+        return decodePem(key, "-----BEGIN RSA PUBLIC KEY-----", "-----END RSA PUBLIC KEY-----", CryptUtil::decodeRsaPublicKey);
+    }
+
+    public static PrivateKey decodeRsaPrivateKeyPem(final String key) {
+        return decodePem(key, "-----BEGIN RSA PRIVATE KEY-----", "-----END RSA PRIVATE KEY-----", CryptUtil::decodeRsaPrivateKey);
+    }
+
     public static String encodeRsaPublicKey(final PublicKey key) {
         if (!"RSA".equals(key.getAlgorithm())) throw new IllegalArgumentException("Public key must be RSA");
         return "-----BEGIN RSA PUBLIC KEY-----\n" + RSA_KEY_BASE64.encodeToString(key.getEncoded()) + "\n-----END RSA PUBLIC KEY-----\n";
+    }
+
+    public static String encodeRsaPrivateKey(final PrivateKey key) {
+        if (!"RSA".equals(key.getAlgorithm())) throw new IllegalArgumentException("Private key must be RSA");
+        return "-----BEGIN RSA PRIVATE KEY-----\n" + RSA_KEY_BASE64.encodeToString(key.getEncoded()) + "\n-----END RSA PRIVATE KEY-----\n";
     }
 
     public static SecretKey decryptSecretKey(final PrivateKey privateKey, final byte[] encryptedSecretKey) {
@@ -136,6 +164,17 @@ public class CryptUtil {
         } catch (Throwable e) {
             throw new IllegalStateException("Failed to hash data", e);
         }
+    }
+
+    private static <T extends Key> T decodePem(String key, final String prefix, final String suffix, final Function<byte[], T> decoder) {
+        int start = key.indexOf(prefix);
+        if (start != -1) {
+            start += prefix.length();
+            final int end = key.indexOf(suffix, start);
+            key = key.substring(start, end + 1);
+        }
+
+        return decoder.apply(Base64.getMimeDecoder().decode(key));
     }
 
     private static byte[] long2ByteArray(long value) {
