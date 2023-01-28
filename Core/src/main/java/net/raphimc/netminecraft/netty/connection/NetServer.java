@@ -14,10 +14,10 @@ import java.util.function.Supplier;
 
 public class NetServer {
 
-    private final Supplier<ChannelHandler> handlerSupplier;
-    private final Function<Supplier<ChannelHandler>, ChannelInitializer<SocketChannel>> channelInitializerSupplier;
+    protected final Supplier<ChannelHandler> handlerSupplier;
+    protected final Function<Supplier<ChannelHandler>, ChannelInitializer<SocketChannel>> channelInitializerSupplier;
 
-    private ChannelFuture channelFuture;
+    protected ChannelFuture channelFuture;
 
     public NetServer(final Supplier<ChannelHandler> handlerSupplier) {
         this(handlerSupplier, MinecraftChannelInitializer::new);
