@@ -4,7 +4,6 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.raphimc.netminecraft.util.LazyLoadBase;
 
@@ -15,7 +14,7 @@ import java.util.function.Supplier;
 public class NetServer {
 
     protected final Supplier<ChannelHandler> handlerSupplier;
-    protected final Function<Supplier<ChannelHandler>, ChannelInitializer<SocketChannel>> channelInitializerSupplier;
+    protected final Function<Supplier<ChannelHandler>, ChannelInitializer<Channel>> channelInitializerSupplier;
 
     protected ChannelFuture channelFuture;
 
@@ -23,7 +22,7 @@ public class NetServer {
         this(handlerSupplier, MinecraftChannelInitializer::new);
     }
 
-    public NetServer(final Supplier<ChannelHandler> handlerSupplier, final Function<Supplier<ChannelHandler>, ChannelInitializer<SocketChannel>> channelInitializerSupplier) {
+    public NetServer(final Supplier<ChannelHandler> handlerSupplier, final Function<Supplier<ChannelHandler>, ChannelInitializer<Channel>> channelInitializerSupplier) {
         this.handlerSupplier = handlerSupplier;
         this.channelInitializerSupplier = channelInitializerSupplier;
     }
