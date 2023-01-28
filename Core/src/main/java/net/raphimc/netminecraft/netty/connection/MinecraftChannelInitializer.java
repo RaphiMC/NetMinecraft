@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class MinecraftChannelInitializer extends ChannelInitializer<Channel> {
 
-    private final Supplier<ChannelHandler> handlerSupplier;
+    protected final Supplier<ChannelHandler> handlerSupplier;
 
     public MinecraftChannelInitializer(final Supplier<ChannelHandler> handlerSupplier) {
         this.handlerSupplier = handlerSupplier;
