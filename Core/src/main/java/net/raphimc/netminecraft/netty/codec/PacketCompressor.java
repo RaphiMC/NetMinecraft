@@ -33,7 +33,6 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
             out.add(in.readBytes(in.readableBytes()));
             return;
         }
-
         if (this.inflater == null) this.inflater = new Inflater();
 
         if (in.readableBytes() != 0) {
@@ -65,7 +64,6 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
             out.writeBytes(in);
             return;
         }
-
         if (this.deflater == null) this.deflater = new Deflater();
 
         final int packetSize = in.readableBytes();
