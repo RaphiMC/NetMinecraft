@@ -191,7 +191,7 @@ public enum MCPackets {
     S2C_UPDATE_VIEW_POSITION(PLAY, CLIENTBOUND, MCVersion.v1_14, 0x40, MCVersion.v1_15, 0x41, MCVersion.v1_16, 0x40, MCVersion.v1_17, 0x49, MCVersion.v1_19, 0x48, MCVersion.v1_19_1, 0x4B, MCVersion.v1_19_3, 0x4A, MCVersion.v1_19_4, 0x4E),
     S2C_UPDATE_VIEW_DISTANCE(PLAY, CLIENTBOUND, MCVersion.v1_14, 0x41, MCVersion.v1_15, 0x42, MCVersion.v1_16, 0x41, MCVersion.v1_17, 0x4A, MCVersion.v1_19, 0x49, MCVersion.v1_19_1, 0x4C, MCVersion.v1_19_3, 0x4B, MCVersion.v1_19_4, 0x4F),
     S2C_ENTITY_SOUND(PLAY, CLIENTBOUND, MCVersion.v1_14, 0x50, MCVersion.v1_15, 0x51, MCVersion.v1_16, 0x50, MCVersion.v1_17, 0x5B, MCVersion.v1_18, 0x5C, MCVersion.v1_19_1, 0x5F, MCVersion.v1_19_3, 0x5D, MCVersion.v1_19_4, 0x61),
-    S2C_ACKNOWLEDGE_PLAYER_DIGGING(PLAY, CLIENTBOUND, MCVersion.v1_14, 0x5C, MCVersion.v1_15, 0x08, MCVersion.v1_16, 0x07, MCVersion.v1_17, 0x08, MCVersion.v1_19, -1),
+    S2C_ACKNOWLEDGE_PLAYER_DIGGING(PLAY, CLIENTBOUND, MCVersion.v1_14_4, 0x5C, MCVersion.v1_15, 0x08, MCVersion.v1_16, 0x07, MCVersion.v1_17, 0x08, MCVersion.v1_19, -1),
     S2C_ADD_VIBRATION_SIGNAL(PLAY, CLIENTBOUND, MCVersion.v1_17, 0x05, MCVersion.v1_19, -1),
     S2C_CLEAR_TITLES(PLAY, CLIENTBOUND, MCVersion.v1_17, 0x10, MCVersion.v1_19, 0x0D, MCVersion.v1_19_3, 0x0C, MCVersion.v1_19_4, 0x0E),
     S2C_WORLD_BORDER_INIT(PLAY, CLIENTBOUND, MCVersion.v1_17, 0x20, MCVersion.v1_19, 0x1D, MCVersion.v1_19_1, 0x1F, MCVersion.v1_19_3, 0x1E, MCVersion.v1_19_4, 0x22),
