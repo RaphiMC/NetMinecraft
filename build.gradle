@@ -1,9 +1,10 @@
 allprojects {
     apply plugin: "java-library"
     apply plugin: "maven-publish"
+    apply plugin: "signing"
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-    compileJava.options.encoding = "UTF-8"
+    compileJava.options.encoding = compileTestJava.options.encoding = javadoc.options.encoding = "UTF-8"
 
     group = project.maven_group
     archivesBaseName = project.maven_name
@@ -14,10 +15,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            name = "Jitpack"
-            url = "https://jitpack.io"
-        }
     }
 
     java {
@@ -25,11 +22,22 @@ allprojects {
         withJavadocJar()
     }
 
+    jar {
+        from("LICENSE") {
+            rename { "${it}_${project.archivesBaseName}" }
+        }
+    }
+
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
+
     publishing {
         repositories {
             maven {
                 name = "reposilite"
                 url = project.maven_version.endsWith("SNAPSHOT") ? "https://maven.lenni0451.net/snapshots" : "https://maven.lenni0451.net/releases"
+
                 credentials(PasswordCredentials)
                 authentication {
                     basic(BasicAuthentication)
@@ -43,13 +51,45 @@ allprojects {
                 version = project.maven_version
 
                 from components.java
+
+                pom {
+                    name = "NetMinecraft"
+                    description = "Easy to use low-level networking library for Minecraft"
+                    url = "https://github.com/RaphiMC/NetMinecraft"
+                    licenses {
+                        license {
+                            name = "LGPL-3.0 License"
+                            url = "https://github.com/RaphiMC/NetMinecraft/blob/main/LICENSE"
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = "RK_01"
+                        }
+                    }
+                    scm {
+                        connection = "scm:git:git://github.com/RaphiMC/NetMinecraft.git"
+                        developerConnection = "scm:git:ssh://github.com/RaphiMC/NetMinecraft.git"
+                        url = "https://github.com/RaphiMC/NetMinecraft.git"
+                    }
+                }
             }
         }
+    }
+
+    signing {
+        setRequired(false)
+        sign configurations.archives
+        sign publishing.publications.maven
+    }
+
+    project.tasks.withType(PublishToMavenRepository).forEach {
+        it.dependsOn(project.tasks.withType(Sign))
     }
 
 }
 
 dependencies {
-    api project(":Core")
-    api project(":Packets")
+    api project(":core")
+    api project(":packets")
 }

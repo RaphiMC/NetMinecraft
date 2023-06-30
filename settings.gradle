@@ -7,5 +7,5 @@ pluginManagement {
 
 rootProject.name = "NetMinecraft"
 
-include(":Core")
-include(":Packets")
+include(":core")
+include(":packets")

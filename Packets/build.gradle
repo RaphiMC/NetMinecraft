@@ -1,3 +1,3 @@
 dependencies {
-    api project(":Core")
+    api project(":core")
 }
