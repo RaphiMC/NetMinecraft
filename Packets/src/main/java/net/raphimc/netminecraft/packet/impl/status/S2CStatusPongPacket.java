@@ -15,14 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.constants;
+package net.raphimc.netminecraft.packet.impl.status;
 
-public enum ConnectionState {
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 
-    HANDSHAKING,
-    STATUS,
-    LOGIN,
-    CONFIGURATION,
-    PLAY
+public class S2CStatusPongPacket implements IPacket {
+
+    public long startTime;
+
+    public S2CStatusPongPacket() {
+    }
+
+    public S2CStatusPongPacket(final long startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public void read(ByteBuf byteBuf) {
+        this.startTime = byteBuf.readLong();
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
+        byteBuf.writeLong(this.startTime);
+    }
 
 }

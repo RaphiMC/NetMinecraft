@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.constants;
+package net.raphimc.netminecraft.packet.registry.impl;
 
-public enum ConnectionState {
+import net.raphimc.netminecraft.constants.MCPackets;
+import net.raphimc.netminecraft.packet.impl.handshake.C2SHandshakePacket;
+import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
-    HANDSHAKING,
-    STATUS,
-    LOGIN,
-    CONFIGURATION,
-    PLAY
+public class HandshakePacketRegistry extends PacketRegistry {
+
+    public HandshakePacketRegistry(boolean clientside) {
+        super(clientside);
+
+        this.registerC2SPacket(MCPackets.C2S_HANDSHAKE.getId(0), C2SHandshakePacket::new);
+    }
 
 }

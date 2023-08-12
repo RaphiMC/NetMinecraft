@@ -18,22 +18,15 @@
 package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.packet.impl.status.C2SPingRequestPacket;
-import net.raphimc.netminecraft.packet.impl.status.C2SStatusRequestPacket;
-import net.raphimc.netminecraft.packet.impl.status.S2CPingResponsePacket;
-import net.raphimc.netminecraft.packet.impl.status.S2CStatusResponsePacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.constants.MCVersion;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_7_6;
 
-public class StatusPacketRegistryBase extends PacketRegistry {
+public class LoginPacketRegistry1_7_6 extends LoginPacketRegistry1_7 {
 
-    public StatusPacketRegistryBase(boolean clientside) {
+    public LoginPacketRegistry1_7_6(boolean clientside) {
         super(clientside);
 
-        this.registerC2SPacket(MCPackets.C2S_STATUS_REQUEST.getId(0), C2SStatusRequestPacket::new);
-        this.registerC2SPacket(MCPackets.C2S_STATUS_PING.getId(0), C2SPingRequestPacket::new);
-
-        this.registerS2CPacket(MCPackets.S2C_STATUS_RESPONSE.getId(0), S2CStatusResponsePacket::new);
-        this.registerS2CPacket(MCPackets.S2C_STATUS_PONG.getId(0), S2CPingResponsePacket::new);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_7_2), S2CLoginSuccessPacket1_7_6::new);
     }
 
 }

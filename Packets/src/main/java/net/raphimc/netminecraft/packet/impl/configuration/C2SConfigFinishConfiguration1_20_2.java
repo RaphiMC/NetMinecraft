@@ -15,14 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.constants;
+package net.raphimc.netminecraft.packet.impl.configuration;
 
-public enum ConnectionState {
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 
-    HANDSHAKING,
-    STATUS,
-    LOGIN,
-    CONFIGURATION,
-    PLAY
+public class C2SConfigFinishConfiguration1_20_2 implements IPacket {
+
+    public C2SConfigFinishConfiguration1_20_2() {
+    }
+
+    @Override
+    public void read(ByteBuf byteBuf) {
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
+    }
 
 }

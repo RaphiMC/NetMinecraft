@@ -20,14 +20,14 @@ package net.raphimc.netminecraft.packet.impl.status;
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
 
-public class S2CPingResponsePacket implements IPacket {
+public class C2SStatusPingPacket implements IPacket {
 
     public long startTime;
 
-    public S2CPingResponsePacket() {
+    public C2SStatusPingPacket() {
     }
 
-    public S2CPingResponsePacket(final long startTime) {
+    public C2SStatusPingPacket(final long startTime) {
         this.startTime = startTime;
     }
 

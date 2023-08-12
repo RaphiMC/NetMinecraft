@@ -15,18 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.registry.impl;
+package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.packet.impl.handshake.C2SHandshakePacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 
-public class HandshakePacketRegistryBase extends PacketRegistry {
+public class C2SLoginStartConfiguration1_20_2 implements IPacket {
 
-    public HandshakePacketRegistryBase(boolean clientside) {
-        super(clientside);
+    public C2SLoginStartConfiguration1_20_2() {
+    }
 
-        this.registerC2SPacket(MCPackets.C2S_HANDSHAKE.getId(0), C2SHandshakePacket::new);
+    @Override
+    public void read(ByteBuf byteBuf) {
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
     }
 
 }

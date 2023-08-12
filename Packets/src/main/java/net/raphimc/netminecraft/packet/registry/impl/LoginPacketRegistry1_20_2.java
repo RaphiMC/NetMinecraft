@@ -19,14 +19,16 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.login.C2SLoginHelloPacket1_19_1;
+import net.raphimc.netminecraft.packet.impl.login.C2SLoginHelloPacket1_20_2;
+import net.raphimc.netminecraft.packet.impl.login.C2SLoginStartConfiguration1_20_2;
 
-public class LoginPacketRegistryBase1_19_1 extends LoginPacketRegistryBase1_19 {
+public class LoginPacketRegistry1_20_2 extends LoginPacketRegistry1_19_3 {
 
-    public LoginPacketRegistryBase1_19_1(boolean clientside) {
+    public LoginPacketRegistry1_20_2(boolean clientside) {
         super(clientside);
 
-        this.registerC2SPacket(MCPackets.C2S_LOGIN_HELLO.getId(MCVersion.v1_19_1), C2SLoginHelloPacket1_19_1::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_HELLO.getId(MCVersion.v1_20_2), C2SLoginHelloPacket1_20_2::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_START_CONFIGURATION.getId(MCVersion.v1_20_2), C2SLoginStartConfiguration1_20_2::new);
     }
 
 }

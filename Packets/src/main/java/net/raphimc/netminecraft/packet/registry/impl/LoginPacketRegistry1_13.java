@@ -15,30 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.status;
+package net.raphimc.netminecraft.packet.registry.impl;
 
-import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.constants.MCPackets;
+import net.raphimc.netminecraft.constants.MCVersion;
+import net.raphimc.netminecraft.packet.impl.login.C2SLoginCustomPayloadPacket;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginCustomPayloadPacket;
 
-public class C2SPingRequestPacket implements IPacket {
+public class LoginPacketRegistry1_13 extends LoginPacketRegistry1_8 {
 
-    public long startTime;
+    public LoginPacketRegistry1_13(boolean clientside) {
+        super(clientside);
 
-    public C2SPingRequestPacket() {
-    }
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_QUERY_RESPONSE.getId(MCVersion.v1_13), C2SLoginCustomPayloadPacket::new);
 
-    public C2SPingRequestPacket(final long startTime) {
-        this.startTime = startTime;
-    }
-
-    @Override
-    public void read(ByteBuf byteBuf) {
-        this.startTime = byteBuf.readLong();
-    }
-
-    @Override
-    public void write(ByteBuf byteBuf) {
-        byteBuf.writeLong(this.startTime);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_QUERY_REQUEST.getId(MCVersion.v1_13), S2CLoginCustomPayloadPacket::new);
     }
 
 }

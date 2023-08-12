@@ -44,7 +44,7 @@ public class C2SHandshakePacket implements IPacket {
         this.protocolVersion = PacketTypes.readVarInt(byteBuf);
         this.address = PacketTypes.readString(byteBuf, 255);
         this.port = byteBuf.readUnsignedShort();
-        this.intendedState = ConnectionState.getById(PacketTypes.readVarInt(byteBuf));
+        this.intendedState = this.readConnectionState(byteBuf);
     }
 
     @Override
@@ -52,7 +52,32 @@ public class C2SHandshakePacket implements IPacket {
         PacketTypes.writeVarInt(byteBuf, this.protocolVersion);
         PacketTypes.writeString(byteBuf, this.address);
         byteBuf.writeShort(this.port);
-        PacketTypes.writeVarInt(byteBuf, this.intendedState.getId());
+        this.writeConnectionState(byteBuf, this.intendedState);
+    }
+
+    protected ConnectionState readConnectionState(final ByteBuf byteBuf) {
+        final int id = PacketTypes.readVarInt(byteBuf);
+        switch (id) {
+            case 1:
+                return ConnectionState.STATUS;
+            case 2:
+                return ConnectionState.LOGIN;
+            default:
+                return null;
+        }
+    }
+
+    protected void writeConnectionState(final ByteBuf byteBuf, final ConnectionState state) {
+        switch (state) {
+            case STATUS:
+                PacketTypes.writeVarInt(byteBuf, 1);
+                break;
+            case LOGIN:
+                PacketTypes.writeVarInt(byteBuf, 2);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid state: " + state);
+        }
     }
 
 }

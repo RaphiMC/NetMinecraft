@@ -19,14 +19,16 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_16;
+import net.raphimc.netminecraft.packet.impl.login.C2SLoginHelloPacket1_19_3;
+import net.raphimc.netminecraft.packet.impl.login.C2SLoginKeyPacket1_19_3;
 
-public class LoginPacketRegistryBase1_16 extends LoginPacketRegistryBase1_13 {
+public class LoginPacketRegistry1_19_3 extends LoginPacketRegistry1_19_1 {
 
-    public LoginPacketRegistryBase1_16(boolean clientside) {
+    public LoginPacketRegistry1_19_3(boolean clientside) {
         super(clientside);
 
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_16), S2CLoginSuccessPacket1_16::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_HELLO.getId(MCVersion.v1_19_3), C2SLoginHelloPacket1_19_3::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_ENCRYPTION_RESPONSE.getId(MCVersion.v1_19_3), C2SLoginKeyPacket1_19_3::new);
     }
 
 }

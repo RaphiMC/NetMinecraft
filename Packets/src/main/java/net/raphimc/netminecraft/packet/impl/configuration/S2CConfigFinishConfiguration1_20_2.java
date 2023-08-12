@@ -15,14 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.registry.impl;
+package net.raphimc.netminecraft.packet.impl.configuration;
 
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 
-public class PlayPacketRegistryBase extends PacketRegistry {
+public class S2CConfigFinishConfiguration1_20_2 implements IPacket {
 
-    public PlayPacketRegistryBase(boolean clientside) {
-        super(clientside);
+    public S2CConfigFinishConfiguration1_20_2() {
+    }
+
+    @Override
+    public void read(ByteBuf byteBuf) {
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
     }
 
 }
