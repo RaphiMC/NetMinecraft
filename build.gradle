@@ -23,7 +23,7 @@ allprojects {
 
     jar {
         from("LICENSE") {
-            rename { "${it}_${rootProject.name}" }
+            rename { "${it}_${project.name ?: rootProject.name}" }
         }
     }
 
