@@ -33,7 +33,8 @@ public class MCPipeline {
     public static final String ENCRYPTION_HANDLER_NAME = "encryption";
     public static final String SIZER_HANDLER_NAME = "sizer";
     public static final String COMPRESSION_HANDLER_NAME = "compression";
-    public static final String PACKET_CODEC_HANDLER_NAME = "packet_codec";
+    public static final String FLOW_CONTROL_HANDLER_NAME = "flow-control";
+    public static final String PACKET_CODEC_HANDLER_NAME = "packet-codec";
     public static final String HANDLER_HANDLER_NAME = "handler";
 
     // Keys to change handler settings

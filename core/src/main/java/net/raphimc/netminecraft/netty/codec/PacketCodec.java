@@ -31,13 +31,6 @@ import java.util.List;
 public class PacketCodec extends ByteToMessageCodec<IPacket> {
 
     @Override
-    public void read(ChannelHandlerContext ctx) throws Exception {
-        if (ctx.channel().config().isAutoRead()) {
-            super.read(ctx);
-        }
-    }
-
-    @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
         if (ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get() == null) {
             out.add(in.readBytes(in.readableBytes()));
