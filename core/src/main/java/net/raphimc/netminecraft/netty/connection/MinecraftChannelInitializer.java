@@ -20,7 +20,6 @@ package net.raphimc.netminecraft.netty.connection;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
-import io.netty.handler.flow.FlowControlHandler;
 import net.raphimc.netminecraft.constants.MCPipeline;
 
 import java.util.function.Supplier;
@@ -41,7 +40,7 @@ public class MinecraftChannelInitializer extends ChannelInitializer<Channel> {
 
         channel.pipeline().addLast(MCPipeline.ENCRYPTION_HANDLER_NAME, MCPipeline.ENCRYPTION_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.SIZER_HANDLER_NAME, MCPipeline.SIZER_HANDLER.get());
-        channel.pipeline().addLast(MCPipeline.FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
+        channel.pipeline().addLast(MCPipeline.FLOW_CONTROL_HANDLER_NAME, MCPipeline.FLOW_CONTROL_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.COMPRESSION_HANDLER_NAME, MCPipeline.COMPRESSION_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.PACKET_CODEC_HANDLER_NAME, MCPipeline.PACKET_CODEC_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.HANDLER_HANDLER_NAME, this.handlerSupplier.get());

@@ -18,6 +18,7 @@
 package net.raphimc.netminecraft.constants;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.util.AttributeKey;
 import net.raphimc.netminecraft.netty.codec.*;
@@ -32,8 +33,8 @@ public class MCPipeline {
     // Handler names
     public static final String ENCRYPTION_HANDLER_NAME = "encryption";
     public static final String SIZER_HANDLER_NAME = "sizer";
-    public static final String COMPRESSION_HANDLER_NAME = "compression";
     public static final String FLOW_CONTROL_HANDLER_NAME = "flow-control";
+    public static final String COMPRESSION_HANDLER_NAME = "compression";
     public static final String PACKET_CODEC_HANDLER_NAME = "packet-codec";
     public static final String HANDLER_HANDLER_NAME = "handler";
 
@@ -45,6 +46,7 @@ public class MCPipeline {
     // Default handlers
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_ENCRYPTION_HANDLER = PacketCryptor::new;
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_SIZER_HANDLER = PacketSizer::new;
+    public static final Supplier<ChannelHandler> DEFAULT_FLOW_CONTROL_HANDLER = NoReadFlowControlHandler::new;
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_COMPRESSION_HANDLER = PacketCompressor::new;
     public static final Supplier<ByteToMessageCodec<IPacket>> DEFAULT_PACKET_CODEC_HANDLER = PacketCodec::new;
     // Optimized handlers
@@ -53,6 +55,7 @@ public class MCPipeline {
     // Handlers which are getting used
     public static Supplier<ByteToMessageCodec<ByteBuf>> ENCRYPTION_HANDLER;
     public static Supplier<ByteToMessageCodec<ByteBuf>> SIZER_HANDLER;
+    public static Supplier<ChannelHandler> FLOW_CONTROL_HANDLER;
     public static Supplier<ByteToMessageCodec<ByteBuf>> COMPRESSION_HANDLER;
     public static Supplier<ByteToMessageCodec<IPacket>> PACKET_CODEC_HANDLER;
 
@@ -63,6 +66,7 @@ public class MCPipeline {
     public static void useDefaultPipeline() {
         ENCRYPTION_HANDLER = DEFAULT_ENCRYPTION_HANDLER;
         SIZER_HANDLER = DEFAULT_SIZER_HANDLER;
+        FLOW_CONTROL_HANDLER = DEFAULT_FLOW_CONTROL_HANDLER;
         COMPRESSION_HANDLER = DEFAULT_COMPRESSION_HANDLER;
         PACKET_CODEC_HANDLER = DEFAULT_PACKET_CODEC_HANDLER;
     }
