@@ -94,7 +94,7 @@ PacketTypes.writeVarInt(handshake, 1); // next state
 ByteBuf request = Unpooled.buffer();
 PacketTypes.writeVarInt(request, 0); // packet id
 
-client.connect(new ServerAddress("localhost", 25565));
+client.connect(new ServerAddress("localhost", 25565)).syncUninterruptibly(); // blocking connect
 client.getChannel().writeAndFlush(handshake);
 client.getChannel().writeAndFlush(request);
 client.getChannel().closeFuture().syncUninterruptibly();

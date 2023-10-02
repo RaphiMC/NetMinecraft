@@ -64,9 +64,9 @@ public class NetClient {
         this.channelFuture = bootstrap.register().syncUninterruptibly();
     }
 
-    public void connect(final ServerAddress serverAddress) {
+    public ChannelFuture connect(final ServerAddress serverAddress) {
         if (this.channelFuture == null) this.initialize(new Bootstrap());
-        this.getChannel().connect(serverAddress.toSocketAddress()).syncUninterruptibly();
+        return this.getChannel().connect(serverAddress.toSocketAddress());
     }
 
     public Channel getChannel() {
