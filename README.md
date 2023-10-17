@@ -3,11 +3,11 @@ Easy to use low-level networking library for Minecraft.
 
 ## Releases
 ### Gradle/Maven
-To use NetMinecraft with Gradle/Maven you can get it from [Lenni0451's maven](https://maven.lenni0451.net/#/releases/net/raphimc/netminecraft) or [Jitpack](https://jitpack.io/#RaphiMC/NetMinecraft).
+To use NetMinecraft with Gradle/Maven you can get it from [Lenni0451's Maven](https://maven.lenni0451.net/#/releases/net/raphimc/netminecraft) or [Jitpack](https://jitpack.io/#RaphiMC/NetMinecraft).
 You can also find instructions how to implement it into your build script there.
 
 ### Jar File
-If you just want the latest jar file you can download it from this [Jenkins](https://build.lenni0451.net/job/NetMinecraft/).
+If you just want the latest jar file you can download it from [GitHub Actions](https://github.com/RaphiMC/NetMinecraft/actions/workflows/build.yml) or [Lenni0451's Jenkins](https://build.lenni0451.net/job/NetMinecraft/).
 
 ## Usage
 ### Client
