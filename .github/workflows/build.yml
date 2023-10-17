@@ -23,6 +23,6 @@ jobs:
         with:
           name: Artifacts
           path: |
-            build/libs/
-            core/build/libs/
-            packets/build/libs/
+            build/libs/*
+            core/build/libs/*
+            packets/build/libs/*
