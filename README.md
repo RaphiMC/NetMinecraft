@@ -38,9 +38,9 @@ public class ClientChannelInitializer extends MinecraftChannelInitializer {
     }
 
     @Override
-    protected void initChannel(SocketChannel socketChannel) {
-        super.initChannel(socketChannel);
-        socketChannel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).set(PacketRegistryUtil.getHandshakeRegistry(false));
+    protected void initChannel(Channel channel) {
+        super.initChannel(channel);
+        channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).set(PacketRegistryUtil.getHandshakeRegistry(false));
     }
 
 }
@@ -141,10 +141,10 @@ final NetServer server = new NetServer(() -> new SimpleChannelInboundHandler<Byt
                 }
             };
         }
-    }, channelHandlerSupplier -> new ChannelInitializer<SocketChannel>() {
+    }, channelHandlerSupplier -> new ChannelInitializer<Channel>() {
         @Override
-        protected void initChannel(SocketChannel socketChannel) {
-            socketChannel.pipeline().addLast(channelHandlerSupplier.get());
+        protected void initChannel(Channel channel) {
+        channel.pipeline().addLast(channelHandlerSupplier.get());
         }
     });
 
@@ -163,10 +163,10 @@ final NetServer server = new NetServer(() -> new SimpleChannelInboundHandler<Byt
     public void channelInactive(ChannelHandlerContext ctx) {
         this.client.getChannel().close().syncUninterruptibly();
     }
-}, channelHandlerSupplier -> new ChannelInitializer<SocketChannel>() {
+}, channelHandlerSupplier -> new ChannelInitializer<Channel>() {
     @Override
-    protected void initChannel(SocketChannel socketChannel) {
-        socketChannel.pipeline().addLast(channelHandlerSupplier.get());
+    protected void initChannel(Channel channel) {
+        channel.pipeline().addLast(channelHandlerSupplier.get());
     }
 });
 server.bind("0.0.0.0", 25565);
