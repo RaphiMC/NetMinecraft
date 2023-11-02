@@ -23,7 +23,7 @@ import net.raphimc.netminecraft.packet.impl.login.C2SLoginHelloPacket1_19;
 import net.raphimc.netminecraft.packet.impl.login.C2SLoginKeyPacket1_19;
 import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_19;
 
-public class LoginPacketRegistry1_19 extends LoginPacketRegistry1_16 {
+public class LoginPacketRegistry1_19 extends LoginPacketRegistry1_18 {
 
     public LoginPacketRegistry1_19(boolean clientside) {
         super(clientside);

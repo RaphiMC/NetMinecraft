@@ -18,28 +18,30 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
+import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.serializer.TextComponentSerializer;
 import net.raphimc.netminecraft.packet.IPacket;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginDisconnectPacket implements IPacket {
+public class S2CLoginDisconnectPacket1_7 implements IPacket {
 
-    public String reason;
+    public ATextComponent reason;
 
-    public S2CLoginDisconnectPacket() {
+    public S2CLoginDisconnectPacket1_7() {
     }
 
-    public S2CLoginDisconnectPacket(final String reason) {
+    public S2CLoginDisconnectPacket1_7(final ATextComponent reason) {
         this.reason = reason;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.reason = PacketTypes.readString(byteBuf, 262144);
+        this.reason = TextComponentSerializer.V1_7.deserialize(PacketTypes.readString(byteBuf, 262144));
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeString(byteBuf, this.reason);
+        PacketTypes.writeString(byteBuf, TextComponentSerializer.V1_7.serialize(this.reason));
     }
 
 }

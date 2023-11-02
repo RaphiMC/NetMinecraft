@@ -15,21 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.registry.impl;
+package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.login.C2SLoginCustomPayloadPacket;
-import net.raphimc.netminecraft.packet.impl.login.S2CLoginCustomPayloadPacket;
+import io.netty.buffer.ByteBuf;
+import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.serializer.TextComponentSerializer;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class LoginPacketRegistry1_13 extends LoginPacketRegistry1_12 {
+public class S2CLoginDisconnectPacket1_8 extends S2CLoginDisconnectPacket1_7 {
 
-    public LoginPacketRegistry1_13(boolean clientside) {
-        super(clientside);
+    public S2CLoginDisconnectPacket1_8() {
+    }
 
-        this.registerC2SPacket(MCPackets.C2S_LOGIN_QUERY_RESPONSE.getId(MCVersion.v1_13), C2SLoginCustomPayloadPacket::new);
+    public S2CLoginDisconnectPacket1_8(final ATextComponent reason) {
+        super(reason);
+    }
 
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_QUERY_REQUEST.getId(MCVersion.v1_13), S2CLoginCustomPayloadPacket::new);
+    @Override
+    public void read(ByteBuf byteBuf) {
+        this.reason = TextComponentSerializer.V1_8.deserialize(PacketTypes.readString(byteBuf, 262144));
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeString(byteBuf, TextComponentSerializer.V1_8.serialize(this.reason));
     }
 
 }

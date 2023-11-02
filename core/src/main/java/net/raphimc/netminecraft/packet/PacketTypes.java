@@ -18,8 +18,15 @@
 package net.raphimc.netminecraft.packet;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
+import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.io.NbtIO;
+import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -135,6 +142,46 @@ public class PacketTypes {
         final byte[] bytes = new byte[byteBuf.readableBytes()];
         byteBuf.readBytes(bytes);
         return bytes;
+    }
+
+    public static INbtTag readNamedTag(final ByteBuf byteBuf) {
+        return readNamedTag(byteBuf, new NbtReadTracker());
+    }
+
+    public static INbtTag readNamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
+        try {
+            return NbtIO.JAVA.read(new ByteBufInputStream(byteBuf), readTracker);
+        } catch (IOException e) {
+            throw new DecoderException(e);
+        }
+    }
+
+    public static void writeNamedTag(final ByteBuf byteBuf, final INbtTag nbt) {
+        try {
+            NbtIO.JAVA.write(new ByteBufOutputStream(byteBuf), "", nbt);
+        } catch (IOException e) {
+            throw new EncoderException(e);
+        }
+    }
+
+    public static INbtTag readUnnamedTag(final ByteBuf byteBuf) {
+        return readUnnamedTag(byteBuf, new NbtReadTracker());
+    }
+
+    public static INbtTag readUnnamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
+        try {
+            return NbtIO.JAVA.readUnnamed(new ByteBufInputStream(byteBuf), readTracker);
+        } catch (IOException e) {
+            throw new DecoderException(e);
+        }
+    }
+
+    public static void writeUnnamedTag(final ByteBuf byteBuf, final INbtTag nbt) {
+        try {
+            NbtIO.JAVA.writeUnnamed(new ByteBufOutputStream(byteBuf), nbt);
+        } catch (IOException e) {
+            throw new EncoderException(e);
+        }
     }
 
 }

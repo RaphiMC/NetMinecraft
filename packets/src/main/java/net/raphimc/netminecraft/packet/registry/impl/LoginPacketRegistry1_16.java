@@ -19,13 +19,15 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginDisconnectPacket1_16;
 import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_16;
 
-public class LoginPacketRegistry1_16 extends LoginPacketRegistry1_13 {
+public class LoginPacketRegistry1_16 extends LoginPacketRegistry1_15 {
 
     public LoginPacketRegistry1_16(boolean clientside) {
         super(clientside);
 
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_DISCONNECT.getId(MCVersion.v1_16), S2CLoginDisconnectPacket1_16::new);
         this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_16), S2CLoginSuccessPacket1_16::new);
     }
 

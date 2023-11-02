@@ -31,7 +31,9 @@ public class PacketRegistryUtil {
     }
 
     public static PacketRegistry getLoginRegistry(final boolean clientside, final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_20_2) {
+        if (protocolVersion >= MCVersion.v1_20_3) {
+            return new LoginPacketRegistry1_20_3(clientside);
+        } else if (protocolVersion >= MCVersion.v1_20_2) {
             return new LoginPacketRegistry1_20_2(clientside);
         } else if (protocolVersion >= MCVersion.v1_19_3) {
             return new LoginPacketRegistry1_19_3(clientside);
@@ -39,10 +41,22 @@ public class PacketRegistryUtil {
             return new LoginPacketRegistry1_19_1(clientside);
         } else if (protocolVersion >= MCVersion.v1_19) {
             return new LoginPacketRegistry1_19(clientside);
+        } else if (protocolVersion >= MCVersion.v1_18) {
+            return new LoginPacketRegistry1_18(clientside);
+        } else if (protocolVersion >= MCVersion.v1_17) {
+            return new LoginPacketRegistry1_17(clientside);
         } else if (protocolVersion >= MCVersion.v1_16) {
             return new LoginPacketRegistry1_16(clientside);
+        } else if (protocolVersion >= MCVersion.v1_15) {
+            return new LoginPacketRegistry1_15(clientside);
+        } else if (protocolVersion >= MCVersion.v1_14) {
+            return new LoginPacketRegistry1_14(clientside);
         } else if (protocolVersion >= MCVersion.v1_13) {
             return new LoginPacketRegistry1_13(clientside);
+        } else if (protocolVersion >= MCVersion.v1_12) {
+            return new LoginPacketRegistry1_12(clientside);
+        } else if (protocolVersion >= MCVersion.v1_9) {
+            return new LoginPacketRegistry1_9(clientside);
         } else if (protocolVersion >= MCVersion.v1_8) {
             return new LoginPacketRegistry1_8(clientside);
         } else if (protocolVersion >= MCVersion.v1_7_6) {

@@ -21,6 +21,7 @@ import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.impl.login.C2SLoginKeyPacket1_8;
 import net.raphimc.netminecraft.packet.impl.login.S2CLoginCompressionPacket;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginDisconnectPacket1_8;
 import net.raphimc.netminecraft.packet.impl.login.S2CLoginKeyPacket1_8;
 
 public class LoginPacketRegistry1_8 extends LoginPacketRegistry1_7_6 {
@@ -30,6 +31,7 @@ public class LoginPacketRegistry1_8 extends LoginPacketRegistry1_7_6 {
 
         this.registerC2SPacket(MCPackets.C2S_LOGIN_ENCRYPTION_RESPONSE.getId(MCVersion.v1_8), C2SLoginKeyPacket1_8::new);
 
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_DISCONNECT.getId(MCVersion.v1_8), S2CLoginDisconnectPacket1_8::new);
         this.registerS2CPacket(MCPackets.S2C_LOGIN_ENCRYPTION_REQUEST.getId(MCVersion.v1_8), S2CLoginKeyPacket1_8::new);
         this.registerS2CPacket(MCPackets.S2C_LOGIN_COMPRESSION.getId(MCVersion.v1_8), S2CLoginCompressionPacket::new);
     }
