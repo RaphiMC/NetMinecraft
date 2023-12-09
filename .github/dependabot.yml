@@ -1,10 +1,10 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/Core"
+    directory: "/core"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-    directory: "/Packets"
+    directory: "/packets"
     schedule:
       interval: "daily"
