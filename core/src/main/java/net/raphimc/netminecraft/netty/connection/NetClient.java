@@ -19,12 +19,9 @@ package net.raphimc.netminecraft.netty.connection;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
-import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import net.raphimc.netminecraft.util.LazyLoadBase;
-import net.raphimc.netminecraft.util.ServerAddress;
+import net.raphimc.netminecraft.util.ChannelType;
 
+import java.net.SocketAddress;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -44,18 +41,10 @@ public class NetClient {
         this.channelInitializerSupplier = channelInitializerSupplier;
     }
 
-    public void initialize(final Bootstrap bootstrap) {
-        if (Epoll.isAvailable()) {
-            bootstrap
-                    .group(LazyLoadBase.CLIENT_EPOLL_EVENTLOOP.getValue())
-                    .channel(EpollSocketChannel.class);
-        } else {
-            bootstrap
-                    .group(LazyLoadBase.CLIENT_NIO_EVENTLOOP.getValue())
-                    .channel(NioSocketChannel.class);
-        }
-
+    public void initialize(final ChannelType channelType, final Bootstrap bootstrap) {
         bootstrap
+                .group(channelType.clientEventLoopGroup().get())
+                .channel(channelType.tcpClientChannelClass())
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.IP_TOS, 0x18)
@@ -64,13 +53,19 @@ public class NetClient {
         this.channelFuture = bootstrap.register().syncUninterruptibly();
     }
 
-    public ChannelFuture connect(final ServerAddress serverAddress) {
-        if (this.channelFuture == null) this.initialize(new Bootstrap());
-        return this.getChannel().connect(serverAddress.toSocketAddress());
+    public ChannelFuture connect(final SocketAddress address) {
+        if (this.channelFuture == null) {
+            this.initialize(ChannelType.get(address), new Bootstrap());
+        }
+
+        return this.getChannel().connect(address);
     }
 
     public Channel getChannel() {
-        if (this.channelFuture == null) return null;
+        if (this.channelFuture == null) {
+            return null;
+        }
+
         return this.channelFuture.channel();
     }
 

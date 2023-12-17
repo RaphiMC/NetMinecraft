@@ -13,7 +13,7 @@ If you just want the latest jar file you can download it from [GitHub Actions](h
 ### Client
 To create a client you can create a new ``NetClient`` instance. The first parameter is a supplier which returns a ``ChannelHandler`` which will be used to handle the packets.  
 
-To connect to a server with the client you can use the ``connect`` method. (The minecraft srv record will be resolved automatically)
+To connect to a server with the client you can use the ``connect`` method. (To resolve SRV records you can use the ``MinecraftServerAddress`` class)
 
 ### Server
 To create a server you can create a new ``NetServer`` instance. The first parameter is a supplier which returns a ``ChannelHandler`` which will be used to handle the incoming connections.  
@@ -94,7 +94,7 @@ PacketTypes.writeVarInt(handshake, 1); // next state
 ByteBuf request = Unpooled.buffer();
 PacketTypes.writeVarInt(request, 0); // packet id
 
-client.connect(new ServerAddress("localhost", 25565)).syncUninterruptibly(); // blocking connect
+client.connect(MinecraftServerAddress.ofResolved("localhost")).syncUninterruptibly(); // blocking connect
 client.getChannel().writeAndFlush(handshake);
 client.getChannel().writeAndFlush(request);
 client.getChannel().closeFuture().syncUninterruptibly();
@@ -124,7 +124,7 @@ NetServer server = new NetServer(new Supplier<ChannelHandler>() {
         };
     }
 });
-server.bind("0.0.0.0", 25565, true);
+server.bind(new InetSocketAddress("0.0.0.0", 25565), true);
 ```
 ### Proxy
 ```java
@@ -151,7 +151,7 @@ final NetServer server = new NetServer(() -> new SimpleChannelInboundHandler<Byt
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         this.otherChannel = ctx.channel();
-        this.client.connect(new ServerAddress("localhost", 25566));
+        this.client.connect(MinecraftServerAddress.ofResolved("localhost"));
     }
 
     @Override
@@ -169,5 +169,5 @@ final NetServer server = new NetServer(() -> new SimpleChannelInboundHandler<Byt
         channel.pipeline().addLast(channelHandlerSupplier.get());
     }
 });
-server.bind("0.0.0.0", 25565);
+server.bind(new InetSocketAddress("0.0.0.0", 25565));
 ```
