@@ -31,7 +31,9 @@ public class PacketRegistryUtil {
     }
 
     public static PacketRegistry getLoginRegistry(final boolean clientside, final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_20_3) {
+        if (protocolVersion >= MCVersion.v1_20_5) {
+            return new LoginPacketRegistry1_20_5(clientside);
+        } else if (protocolVersion >= MCVersion.v1_20_3) {
             return new LoginPacketRegistry1_20_3(clientside);
         } else if (protocolVersion >= MCVersion.v1_20_2) {
             return new LoginPacketRegistry1_20_2(clientside);
@@ -66,6 +68,9 @@ public class PacketRegistryUtil {
     }
 
     public static PacketRegistry getConfigurationRegistry(final boolean clientside, final int protocolVersion) {
+        if (protocolVersion >= MCVersion.v1_20_5) {
+            return new ConfigurationPacketRegistry1_20_5(clientside);
+        }
         return new ConfigurationPacketRegistry1_20_2(clientside);
     }
 
