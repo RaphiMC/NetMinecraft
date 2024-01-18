@@ -15,44 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.handshake;
+package net.raphimc.netminecraft.packet.impl.configuration;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.constants.IntendedState;
 import net.raphimc.netminecraft.packet.IPacket;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SHandshakePacket implements IPacket {
+public class S2CConfigTransfer1_20_5 implements IPacket {
 
-    public int protocolVersion;
-    public String address;
+    public String host;
     public int port;
-    public IntendedState intendedState;
 
-    public C2SHandshakePacket() {
+    public S2CConfigTransfer1_20_5() {
     }
 
-    public C2SHandshakePacket(final int protocolVersion, final String address, final int port, final IntendedState intendedState) {
-        this.protocolVersion = protocolVersion;
-        this.address = address;
+    public S2CConfigTransfer1_20_5(final String host, final int port) {
+        this.host = host;
         this.port = port;
-        this.intendedState = intendedState;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.protocolVersion = PacketTypes.readVarInt(byteBuf);
-        this.address = PacketTypes.readString(byteBuf, 255);
-        this.port = byteBuf.readUnsignedShort();
-        this.intendedState = IntendedState.byId(PacketTypes.readVarInt(byteBuf));
+        this.host = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        this.port = PacketTypes.readVarInt(byteBuf);
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeVarInt(byteBuf, this.protocolVersion);
-        PacketTypes.writeString(byteBuf, this.address);
-        byteBuf.writeShort(this.port);
-        PacketTypes.writeVarInt(byteBuf, this.intendedState.ordinal() + 1);
+        PacketTypes.writeString(byteBuf, this.host);
+        PacketTypes.writeVarInt(byteBuf, this.port);
     }
 
 }

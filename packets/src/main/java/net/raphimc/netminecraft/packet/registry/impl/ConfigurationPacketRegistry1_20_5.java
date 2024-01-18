@@ -21,6 +21,7 @@ import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfiguration1_20_2;
 import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfiguration1_20_2;
+import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigTransfer1_20_5;
 import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
 public class ConfigurationPacketRegistry1_20_5 extends PacketRegistry {
@@ -31,6 +32,7 @@ public class ConfigurationPacketRegistry1_20_5 extends PacketRegistry {
         this.registerC2SPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), C2SConfigFinishConfiguration1_20_2::new);
 
         this.registerS2CPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), S2CConfigFinishConfiguration1_20_2::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_TRANSFER.getId(MCVersion.v1_20_5), S2CConfigTransfer1_20_5::new);
     }
 
 }
