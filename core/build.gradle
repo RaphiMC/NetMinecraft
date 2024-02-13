@@ -1,4 +1,4 @@
 dependencies {
-    api "io.netty:netty-all:4.1.106.Final"
+    api "io.netty:netty-all:4.1.107.Final"
     api "net.lenni0451.mcstructs:text:2.4.2"
 }
