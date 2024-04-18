@@ -67,4 +67,5 @@ public class S2CLoginSuccessPacket1_19 extends S2CLoginSuccessPacket1_16 {
             }
         }
     }
+
 }

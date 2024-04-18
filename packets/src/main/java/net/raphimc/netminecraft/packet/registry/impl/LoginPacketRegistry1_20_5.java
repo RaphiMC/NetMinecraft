@@ -20,6 +20,7 @@ package net.raphimc.netminecraft.packet.registry.impl;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.impl.login.S2CLoginKeyPacket1_20_5;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_20_5;
 
 public class LoginPacketRegistry1_20_5 extends LoginPacketRegistry1_20_3 {
 
@@ -27,6 +28,7 @@ public class LoginPacketRegistry1_20_5 extends LoginPacketRegistry1_20_3 {
         super(clientside);
 
         this.registerS2CPacket(MCPackets.S2C_LOGIN_ENCRYPTION_REQUEST.getId(MCVersion.v1_20_5), S2CLoginKeyPacket1_20_5::new);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_20_5), S2CLoginSuccessPacket1_20_5::new);
     }
 
 }
