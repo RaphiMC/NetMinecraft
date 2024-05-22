@@ -15,32 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.status;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.IPacket;
 
-import java.util.UUID;
+public class C2SStatusPingRequestPacket implements IPacket {
 
-public class S2CLoginSuccessPacket1_7_6 extends S2CLoginSuccessPacket1_7 {
+    public long startTime;
 
-    public S2CLoginSuccessPacket1_7_6() {
+    public C2SStatusPingRequestPacket() {
     }
 
-    public S2CLoginSuccessPacket1_7_6(final UUID uuid, final String name) {
-        super(uuid, name);
+    public C2SStatusPingRequestPacket(final long startTime) {
+        this.startTime = startTime;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.uuid = UUID.fromString(PacketTypes.readString(byteBuf, 36));
-        this.name = PacketTypes.readString(byteBuf, 16);
+        this.startTime = byteBuf.readLong();
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeString(byteBuf, this.uuid == null ? "" : this.uuid.toString());
-        PacketTypes.writeString(byteBuf, this.name);
+        byteBuf.writeLong(this.startTime);
     }
 
 }

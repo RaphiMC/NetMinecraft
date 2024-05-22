@@ -15,32 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginKeyPacket1_20_5 extends S2CLoginKeyPacket1_8 {
+public class S2CStoreCookiePacket implements IPacket {
 
-    public boolean authenticate;
+    public String key;
+    public byte[] payload;
 
-    public S2CLoginKeyPacket1_20_5() {
+    public S2CStoreCookiePacket() {
     }
 
-    public S2CLoginKeyPacket1_20_5(final String serverId, final byte[] publicKey, final byte[] nonce, final boolean authenticate) {
-        super(serverId, publicKey, nonce);
-        this.authenticate = authenticate;
+    public S2CStoreCookiePacket(final String key, final byte[] payload) {
+        this.key = key;
+        this.payload = payload;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        super.read(byteBuf);
-        this.authenticate = byteBuf.readBoolean();
+        this.key = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        this.payload = PacketTypes.readByteArray(byteBuf, 5120);
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        super.write(byteBuf);
-        byteBuf.writeBoolean(this.authenticate);
+        PacketTypes.writeString(byteBuf, this.key);
+        PacketTypes.writeByteArray(byteBuf, this.payload);
     }
 
 }

@@ -20,9 +20,9 @@ package net.raphimc.netminecraft.packet.impl.configuration;
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
 
-public class S2CConfigFinishConfiguration1_20_2 implements IPacket {
+public class S2CConfigFinishConfigurationPacket implements IPacket {
 
-    public S2CConfigFinishConfiguration1_20_2() {
+    public S2CConfigFinishConfigurationPacket() {
     }
 
     @Override

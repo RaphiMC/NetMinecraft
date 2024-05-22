@@ -18,35 +18,29 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
-import net.raphimc.netminecraft.packet.PacketTypes;
-import net.raphimc.netminecraft.util.UUIDAdapter;
 
-import java.util.UUID;
+public class S2CLoginHelloPacket1_20_5 extends S2CLoginHelloPacket1_8 {
 
-public class S2CLoginSuccessPacket1_7 implements IPacket {
+    public boolean authenticate;
 
-    public UUID uuid;
-    public String name;
-
-    public S2CLoginSuccessPacket1_7() {
+    public S2CLoginHelloPacket1_20_5() {
     }
 
-    public S2CLoginSuccessPacket1_7(final UUID uuid, final String name) {
-        this.uuid = uuid;
-        this.name = name;
+    public S2CLoginHelloPacket1_20_5(final String serverId, final byte[] publicKey, final byte[] nonce, final boolean authenticate) {
+        super(serverId, publicKey, nonce);
+        this.authenticate = authenticate;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.uuid = UUIDAdapter.fromString(PacketTypes.readString(byteBuf, 36));
-        this.name = PacketTypes.readString(byteBuf, 16);
+        super.read(byteBuf);
+        this.authenticate = byteBuf.readBoolean();
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeString(byteBuf, this.uuid == null ? "" : UUIDAdapter.fromUUID(this.uuid));
-        PacketTypes.writeString(byteBuf, this.name);
+        super.write(byteBuf);
+        byteBuf.writeBoolean(this.authenticate);
     }
 
 }

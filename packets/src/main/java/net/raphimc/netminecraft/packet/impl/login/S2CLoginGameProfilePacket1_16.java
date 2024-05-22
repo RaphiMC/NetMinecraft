@@ -20,52 +20,39 @@ package net.raphimc.netminecraft.packet.impl.login;
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class S2CLoginSuccessPacket1_19 extends S2CLoginSuccessPacket1_16 {
+public class S2CLoginGameProfilePacket1_16 extends S2CLoginGameProfilePacket1_7_6 {
 
-    public List<String[]> properties;
-
-    public S2CLoginSuccessPacket1_19() {
+    public S2CLoginGameProfilePacket1_16() {
     }
 
-    public S2CLoginSuccessPacket1_19(final UUID uuid, final String name, final List<String[]> properties) {
+    public S2CLoginGameProfilePacket1_16(final UUID uuid, final String name) {
         super(uuid, name);
-        this.properties = properties;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
         this.uuid = this.uuidFromIntArray(new int[]{byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt()});
         this.name = PacketTypes.readString(byteBuf, 16);
-        final int count = PacketTypes.readVarInt(byteBuf);
-        this.properties = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            final String name = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
-            final String value = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
-            String signature = null;
-            if (byteBuf.readBoolean()) {
-                signature = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
-            }
-            this.properties.add(new String[]{name, value, signature});
-        }
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
         for (int i : this.uuidToIntArray(this.uuid)) byteBuf.writeInt(i);
         PacketTypes.writeString(byteBuf, this.name);
-        PacketTypes.writeVarInt(byteBuf, this.properties.size());
-        for (String[] property : this.properties) {
-            PacketTypes.writeString(byteBuf, property[0]);
-            PacketTypes.writeString(byteBuf, property[1]);
-            byteBuf.writeBoolean(property[2] != null);
-            if (property[2] != null) {
-                PacketTypes.writeString(byteBuf, property[2]);
-            }
-        }
+    }
+
+    protected UUID uuidFromIntArray(final int[] ints) {
+        return new UUID((long) ints[0] << 32 | ((long) ints[1] & 0xFFFFFFFFL), (long) ints[2] << 32 | ((long) ints[3] & 0xFFFFFFFFL));
+    }
+
+    protected int[] uuidToIntArray(final UUID uuid) {
+        return bitsToIntArray(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
+    }
+
+    protected int[] bitsToIntArray(final long long1, final long long2) {
+        return new int[]{(int) (long1 >> 32), (int) long1, (int) (long2 >> 32), (int) long2};
     }
 
 }

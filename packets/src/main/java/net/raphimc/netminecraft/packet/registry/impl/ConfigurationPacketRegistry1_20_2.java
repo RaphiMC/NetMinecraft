@@ -19,8 +19,8 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfiguration1_20_2;
-import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfiguration1_20_2;
+import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfigurationPacket;
+import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfigurationPacket;
 import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
 public class ConfigurationPacketRegistry1_20_2 extends PacketRegistry {
@@ -28,9 +28,9 @@ public class ConfigurationPacketRegistry1_20_2 extends PacketRegistry {
     public ConfigurationPacketRegistry1_20_2(boolean clientside) {
         super(clientside);
 
-        this.registerC2SPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_2), C2SConfigFinishConfiguration1_20_2::new);
+        this.registerC2SPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_2), C2SConfigFinishConfigurationPacket::new);
 
-        this.registerS2CPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_2), S2CConfigFinishConfiguration1_20_2::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_2), S2CConfigFinishConfigurationPacket::new);
     }
 
 }

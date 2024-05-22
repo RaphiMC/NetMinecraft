@@ -19,14 +19,14 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.login.S2CLoginSuccessPacket1_7_6;
+import net.raphimc.netminecraft.packet.impl.login.S2CLoginGameProfilePacket1_7_6;
 
 public class LoginPacketRegistry1_7_6 extends LoginPacketRegistry1_7 {
 
     public LoginPacketRegistry1_7_6(boolean clientside) {
         super(clientside);
 
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_7_2), S2CLoginSuccessPacket1_7_6::new);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_GAME_PROFILE.getId(MCVersion.v1_7_2), S2CLoginGameProfilePacket1_7_6::new);
     }
 
 }

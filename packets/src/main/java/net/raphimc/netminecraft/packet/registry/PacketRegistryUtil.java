@@ -22,8 +22,8 @@ import net.raphimc.netminecraft.packet.registry.impl.*;
 
 public class PacketRegistryUtil {
 
-    public static PacketRegistry getHandshakeRegistry(final boolean clientside) {
-        return new HandshakePacketRegistry(clientside);
+    public static PacketRegistry getHandshakingRegistry(final boolean clientside) {
+        return new HandshakingPacketRegistry(clientside);
     }
 
     public static PacketRegistry getStatusRegistry(final boolean clientside) {

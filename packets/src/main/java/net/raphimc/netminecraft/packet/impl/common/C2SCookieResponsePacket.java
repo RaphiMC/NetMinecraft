@@ -15,22 +15,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.configuration;
+package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SConfigFinishConfiguration1_20_2 implements IPacket {
+public class C2SCookieResponsePacket implements IPacket {
 
-    public C2SConfigFinishConfiguration1_20_2() {
+    public String key;
+    public byte[] payload;
+
+    public C2SCookieResponsePacket() {
+    }
+
+    public C2SCookieResponsePacket(final String key, final byte[] payload) {
+        this.key = key;
+        this.payload = payload;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
+        this.key = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        if (byteBuf.readBoolean()) {
+            this.payload = PacketTypes.readByteArray(byteBuf, 5120);
+        } else {
+            this.payload = null;
+        }
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
+        PacketTypes.writeString(byteBuf, this.key);
+        byteBuf.writeBoolean(this.payload != null);
+        if (this.payload != null) {
+            PacketTypes.writeByteArray(byteBuf, this.payload);
+        }
     }
 
 }

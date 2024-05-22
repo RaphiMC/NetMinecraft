@@ -19,9 +19,12 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfiguration1_20_2;
-import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfiguration1_20_2;
-import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigTransfer1_20_5;
+import net.raphimc.netminecraft.packet.impl.common.C2SCookieResponsePacket;
+import net.raphimc.netminecraft.packet.impl.common.S2CCookieRequestPacket;
+import net.raphimc.netminecraft.packet.impl.common.S2CStoreCookiePacket;
+import net.raphimc.netminecraft.packet.impl.common.S2CTransferPacket;
+import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfigurationPacket;
+import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfigurationPacket;
 import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
 public class ConfigurationPacketRegistry1_20_5 extends PacketRegistry {
@@ -29,10 +32,13 @@ public class ConfigurationPacketRegistry1_20_5 extends PacketRegistry {
     public ConfigurationPacketRegistry1_20_5(boolean clientside) {
         super(clientside);
 
-        this.registerC2SPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), C2SConfigFinishConfiguration1_20_2::new);
+        this.registerC2SPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), C2SConfigFinishConfigurationPacket::new);
+        this.registerC2SPacket(MCPackets.C2S_CONFIG_COOKIE_RESPONSE.getId(MCVersion.v1_20_5), C2SCookieResponsePacket::new);
 
-        this.registerS2CPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), S2CConfigFinishConfiguration1_20_2::new);
-        this.registerS2CPacket(MCPackets.S2C_CONFIG_TRANSFER.getId(MCVersion.v1_20_5), S2CConfigTransfer1_20_5::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION.getId(MCVersion.v1_20_5), S2CConfigFinishConfigurationPacket::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_COOKIE_REQUEST.getId(MCVersion.v1_20_5), S2CCookieRequestPacket::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_STORE_COOKIE.getId(MCVersion.v1_20_5), S2CStoreCookiePacket::new);
+        this.registerS2CPacket(MCPackets.S2C_CONFIG_TRANSFER.getId(MCVersion.v1_20_5), S2CTransferPacket::new);
     }
 
 }

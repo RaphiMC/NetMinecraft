@@ -28,11 +28,11 @@ public class LoginPacketRegistry1_7 extends PacketRegistry {
         super(clientside);
 
         this.registerC2SPacket(MCPackets.C2S_LOGIN_HELLO.getId(MCVersion.v1_7_2), C2SLoginHelloPacket1_7::new);
-        this.registerC2SPacket(MCPackets.C2S_LOGIN_ENCRYPTION_RESPONSE.getId(MCVersion.v1_7_2), C2SLoginKeyPacket1_7::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_KEY.getId(MCVersion.v1_7_2), C2SLoginKeyPacket1_7::new);
 
         this.registerS2CPacket(MCPackets.S2C_LOGIN_DISCONNECT.getId(MCVersion.v1_7_2), S2CLoginDisconnectPacket1_7::new);
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_ENCRYPTION_REQUEST.getId(MCVersion.v1_7_2), S2CLoginKeyPacket1_7::new);
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_SUCCESS.getId(MCVersion.v1_7_2), S2CLoginSuccessPacket1_7::new);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_HELLO.getId(MCVersion.v1_7_2), S2CLoginHelloPacket1_7::new);
+        this.registerS2CPacket(MCPackets.S2C_LOGIN_GAME_PROFILE.getId(MCVersion.v1_7_2), S2CLoginGameProfilePacket1_7::new);
     }
 
 }

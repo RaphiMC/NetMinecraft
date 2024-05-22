@@ -18,32 +18,36 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-import java.util.List;
-import java.util.UUID;
+public class S2CLoginHelloPacket1_7 implements IPacket {
 
-public class S2CLoginSuccessPacket1_20_5 extends S2CLoginSuccessPacket1_19 {
+    public String serverId;
+    public byte[] publicKey;
+    public byte[] nonce;
 
-    public boolean strictErrorHandling;
-
-    public S2CLoginSuccessPacket1_20_5() {
+    public S2CLoginHelloPacket1_7() {
     }
 
-    public S2CLoginSuccessPacket1_20_5(final UUID uuid, final String name, final List<String[]> properties, final boolean strictErrorHandling) {
-        super(uuid, name, properties);
-        this.strictErrorHandling = strictErrorHandling;
+    public S2CLoginHelloPacket1_7(final String serverId, final byte[] publicKey, final byte[] nonce) {
+        this.serverId = serverId;
+        this.publicKey = publicKey;
+        this.nonce = nonce;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        super.read(byteBuf);
-        this.strictErrorHandling = byteBuf.readBoolean();
+        this.serverId = PacketTypes.readString(byteBuf, 20);
+        this.publicKey = PacketTypes.readShortByteArray(byteBuf);
+        this.nonce = PacketTypes.readShortByteArray(byteBuf);
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        super.write(byteBuf);
-        byteBuf.writeBoolean(this.strictErrorHandling);
+        PacketTypes.writeString(byteBuf, this.serverId);
+        PacketTypes.writeShortByteArray(byteBuf, this.publicKey);
+        PacketTypes.writeShortByteArray(byteBuf, this.nonce);
     }
 
 }

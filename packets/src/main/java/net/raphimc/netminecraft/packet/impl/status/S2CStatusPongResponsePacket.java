@@ -15,22 +15,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.status;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
 
-public class C2SLoginStartConfiguration1_20_2 implements IPacket {
+public class S2CStatusPongResponsePacket implements IPacket {
 
-    public C2SLoginStartConfiguration1_20_2() {
+    public long startTime;
+
+    public S2CStatusPongResponsePacket() {
+    }
+
+    public S2CStatusPongResponsePacket(final long startTime) {
+        this.startTime = startTime;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
+        this.startTime = byteBuf.readLong();
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
+        byteBuf.writeLong(this.startTime);
     }
 
 }

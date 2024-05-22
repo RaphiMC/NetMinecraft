@@ -20,9 +20,9 @@ package net.raphimc.netminecraft.constants;
 public enum ConnectionState {
 
     HANDSHAKING,
+    PLAY,
     STATUS,
     LOGIN,
-    CONFIGURATION,
-    PLAY
+    CONFIGURATION
 
 }

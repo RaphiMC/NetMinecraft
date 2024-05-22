@@ -15,18 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.registry.impl;
+package net.raphimc.netminecraft.packet.impl.common;
 
-import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.packet.impl.handshake.C2SHandshakePacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class HandshakePacketRegistry extends PacketRegistry {
+public class S2CCookieRequestPacket implements IPacket {
 
-    public HandshakePacketRegistry(boolean clientside) {
-        super(clientside);
+    public String key;
 
-        this.registerC2SPacket(MCPackets.C2S_HANDSHAKE.getId(0), C2SHandshakePacket::new);
+    public S2CCookieRequestPacket() {
+    }
+
+    public S2CCookieRequestPacket(final String key) {
+        this.key = key;
+    }
+
+    @Override
+    public void read(ByteBuf byteBuf) {
+        this.key = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
+        PacketTypes.writeString(byteBuf, this.key);
     }
 
 }

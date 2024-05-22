@@ -15,39 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.IPacket;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginKeyPacket1_7 implements IPacket {
+public class S2CTransferPacket implements IPacket {
 
-    public String serverId;
-    public byte[] publicKey;
-    public byte[] nonce;
+    public String host;
+    public int port;
 
-    public S2CLoginKeyPacket1_7() {
+    public S2CTransferPacket() {
     }
 
-    public S2CLoginKeyPacket1_7(final String serverId, final byte[] publicKey, final byte[] nonce) {
-        this.serverId = serverId;
-        this.publicKey = publicKey;
-        this.nonce = nonce;
+    public S2CTransferPacket(final String host, final int port) {
+        this.host = host;
+        this.port = port;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.serverId = PacketTypes.readString(byteBuf, 20);
-        this.publicKey = PacketTypes.readShortByteArray(byteBuf);
-        this.nonce = PacketTypes.readShortByteArray(byteBuf);
+        this.host = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        this.port = PacketTypes.readVarInt(byteBuf);
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeString(byteBuf, this.serverId);
-        PacketTypes.writeShortByteArray(byteBuf, this.publicKey);
-        PacketTypes.writeShortByteArray(byteBuf, this.nonce);
+        PacketTypes.writeString(byteBuf, this.host);
+        PacketTypes.writeVarInt(byteBuf, this.port);
     }
 
 }

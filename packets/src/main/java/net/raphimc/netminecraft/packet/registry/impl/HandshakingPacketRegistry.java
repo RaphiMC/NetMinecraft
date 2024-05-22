@@ -18,22 +18,15 @@
 package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.packet.impl.status.C2SStatusPingRequestPacket;
-import net.raphimc.netminecraft.packet.impl.status.C2SStatusRequestPacket;
-import net.raphimc.netminecraft.packet.impl.status.S2CStatusPongResponsePacket;
-import net.raphimc.netminecraft.packet.impl.status.S2CStatusResponsePacket;
+import net.raphimc.netminecraft.packet.impl.handshaking.C2SHandshakingClientIntentionPacket;
 import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
-public class StatusPacketRegistry extends PacketRegistry {
+public class HandshakingPacketRegistry extends PacketRegistry {
 
-    public StatusPacketRegistry(boolean clientside) {
+    public HandshakingPacketRegistry(boolean clientside) {
         super(clientside);
 
-        this.registerC2SPacket(MCPackets.C2S_STATUS_REQUEST.getId(0), C2SStatusRequestPacket::new);
-        this.registerC2SPacket(MCPackets.C2S_STATUS_PING_REQUEST.getId(0), C2SStatusPingRequestPacket::new);
-
-        this.registerS2CPacket(MCPackets.S2C_STATUS_RESPONSE.getId(0), S2CStatusResponsePacket::new);
-        this.registerS2CPacket(MCPackets.S2C_STATUS_PONG_RESPONSE.getId(0), S2CStatusPongResponsePacket::new);
+        this.registerC2SPacket(MCPackets.C2S_HANDSHAKING_CLIENT_INTENTION.getId(0), C2SHandshakingClientIntentionPacket::new);
     }
 
 }

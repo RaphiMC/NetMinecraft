@@ -18,29 +18,41 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginKeyPacket1_8 extends S2CLoginKeyPacket1_7 {
+public class S2CLoginCustomQueryPacket implements IPacket {
 
-    public S2CLoginKeyPacket1_8() {
+    public int queryId;
+    public String channel;
+    public byte[] payload;
+
+    public S2CLoginCustomQueryPacket() {
     }
 
-    public S2CLoginKeyPacket1_8(final String serverId, final byte[] publicKey, final byte[] nonce) {
-        super(serverId, publicKey, nonce);
+    public S2CLoginCustomQueryPacket(final int queryId, final String channel, final byte[] payload) {
+        this.queryId = queryId;
+        this.channel = channel;
+        this.payload = payload;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.serverId = PacketTypes.readString(byteBuf, 20);
-        this.publicKey = PacketTypes.readByteArray(byteBuf);
-        this.nonce = PacketTypes.readByteArray(byteBuf);
+        this.queryId = PacketTypes.readVarInt(byteBuf);
+        this.channel = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        final int length = byteBuf.readableBytes();
+        if (length < 0 || length > 1048576) {
+            throw new IllegalStateException("Payload may not be larger than 1048576 bytes");
+        }
+        this.payload = new byte[length];
+        byteBuf.readBytes(this.payload);
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        PacketTypes.writeString(byteBuf, this.serverId);
-        PacketTypes.writeByteArray(byteBuf, this.publicKey);
-        PacketTypes.writeByteArray(byteBuf, this.nonce);
+        PacketTypes.writeVarInt(byteBuf, this.queryId);
+        PacketTypes.writeString(byteBuf, this.channel);
+        byteBuf.writeBytes(this.payload);
     }
 
 }

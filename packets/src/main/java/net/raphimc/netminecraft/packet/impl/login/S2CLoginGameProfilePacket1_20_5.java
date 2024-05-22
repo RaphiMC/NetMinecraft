@@ -15,30 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.status;
+package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
 
-public class C2SStatusPingPacket implements IPacket {
+import java.util.List;
+import java.util.UUID;
 
-    public long startTime;
+public class S2CLoginGameProfilePacket1_20_5 extends S2CLoginGameProfilePacket1_19 {
 
-    public C2SStatusPingPacket() {
+    public boolean strictErrorHandling;
+
+    public S2CLoginGameProfilePacket1_20_5() {
     }
 
-    public C2SStatusPingPacket(final long startTime) {
-        this.startTime = startTime;
+    public S2CLoginGameProfilePacket1_20_5(final UUID uuid, final String name, final List<String[]> properties, final boolean strictErrorHandling) {
+        super(uuid, name, properties);
+        this.strictErrorHandling = strictErrorHandling;
     }
 
     @Override
     public void read(ByteBuf byteBuf) {
-        this.startTime = byteBuf.readLong();
+        super.read(byteBuf);
+        this.strictErrorHandling = byteBuf.readBoolean();
     }
 
     @Override
     public void write(ByteBuf byteBuf) {
-        byteBuf.writeLong(this.startTime);
+        super.write(byteBuf);
+        byteBuf.writeBoolean(this.strictErrorHandling);
     }
 
 }

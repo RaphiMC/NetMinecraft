@@ -15,20 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.registry.impl;
+package net.raphimc.netminecraft.packet.impl.login;
 
-import net.raphimc.netminecraft.constants.MCPackets;
-import net.raphimc.netminecraft.constants.MCVersion;
-import net.raphimc.netminecraft.packet.impl.login.S2CLoginDisconnectPacket1_16;
-import net.raphimc.netminecraft.packet.impl.login.S2CLoginGameProfilePacket1_16;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.packet.IPacket;
 
-public class LoginPacketRegistry1_16 extends LoginPacketRegistry1_15 {
+public class C2SLoginAcknowledgedPacket implements IPacket {
 
-    public LoginPacketRegistry1_16(boolean clientside) {
-        super(clientside);
+    public C2SLoginAcknowledgedPacket() {
+    }
 
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_DISCONNECT.getId(MCVersion.v1_16), S2CLoginDisconnectPacket1_16::new);
-        this.registerS2CPacket(MCPackets.S2C_LOGIN_GAME_PROFILE.getId(MCVersion.v1_16), S2CLoginGameProfilePacket1_16::new);
+    @Override
+    public void read(ByteBuf byteBuf) {
+    }
+
+    @Override
+    public void write(ByteBuf byteBuf) {
     }
 
 }

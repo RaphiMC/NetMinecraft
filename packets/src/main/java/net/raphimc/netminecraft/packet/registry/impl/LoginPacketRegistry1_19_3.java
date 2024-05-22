@@ -28,7 +28,7 @@ public class LoginPacketRegistry1_19_3 extends LoginPacketRegistry1_19_1 {
         super(clientside);
 
         this.registerC2SPacket(MCPackets.C2S_LOGIN_HELLO.getId(MCVersion.v1_19_3), C2SLoginHelloPacket1_19_3::new);
-        this.registerC2SPacket(MCPackets.C2S_LOGIN_ENCRYPTION_RESPONSE.getId(MCVersion.v1_19_3), C2SLoginKeyPacket1_19_3::new);
+        this.registerC2SPacket(MCPackets.C2S_LOGIN_KEY.getId(MCVersion.v1_19_3), C2SLoginKeyPacket1_19_3::new);
     }
 
 }
