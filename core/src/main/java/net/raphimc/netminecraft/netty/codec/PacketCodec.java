@@ -40,7 +40,9 @@ public class PacketCodec extends ByteToMessageCodec<IPacket> {
         if (in.readableBytes() != 0) {
             final int packetId = PacketTypes.readVarInt(in);
             final IPacket packet = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getPacketById(packetId);
-            if (packet instanceof UnknownPacket) ((UnknownPacket) packet).packetId = packetId;
+            if (packet instanceof UnknownPacket) {
+                ((UnknownPacket) packet).packetId = packetId;
+            }
             packet.read(in);
             out.add(packet);
         }
@@ -62,8 +64,16 @@ public class PacketCodec extends ByteToMessageCodec<IPacket> {
                 throw new RuntimeException(t);
             }
         }
-        int packetId = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getIdByPacket(targetClass);
-        if (in instanceof UnknownPacket) packetId = ((UnknownPacket) in).packetId;
+
+        final int packetId;
+        if (in instanceof UnknownPacket) {
+            packetId = ((UnknownPacket) in).packetId;
+        } else {
+            packetId = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getIdByPacket(targetClass);
+            if (packetId == -1) {
+                throw new IllegalStateException("Tried to write not registered packet: " + targetClass.getName());
+            }
+        }
 
         PacketTypes.writeVarInt(out, packetId);
         in.write(out);
