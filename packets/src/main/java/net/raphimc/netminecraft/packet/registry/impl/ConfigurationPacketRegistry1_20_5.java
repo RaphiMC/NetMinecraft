@@ -25,9 +25,9 @@ import net.raphimc.netminecraft.packet.impl.common.S2CStoreCookiePacket;
 import net.raphimc.netminecraft.packet.impl.common.S2CTransferPacket;
 import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfigurationPacket;
 import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfigurationPacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class ConfigurationPacketRegistry1_20_5 extends PacketRegistry {
+public class ConfigurationPacketRegistry1_20_5 extends DefaultPacketRegistry {
 
     public ConfigurationPacketRegistry1_20_5(boolean clientside) {
         super(clientside);

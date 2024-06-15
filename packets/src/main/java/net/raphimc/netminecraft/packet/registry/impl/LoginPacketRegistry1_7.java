@@ -20,9 +20,9 @@ package net.raphimc.netminecraft.packet.registry.impl;
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.impl.login.*;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class LoginPacketRegistry1_7 extends PacketRegistry {
+public class LoginPacketRegistry1_7 extends DefaultPacketRegistry {
 
     public LoginPacketRegistry1_7(boolean clientside) {
         super(clientside);

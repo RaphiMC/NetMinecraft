@@ -21,9 +21,9 @@ import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.impl.configuration.C2SConfigFinishConfigurationPacket;
 import net.raphimc.netminecraft.packet.impl.configuration.S2CConfigFinishConfigurationPacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class ConfigurationPacketRegistry1_20_2 extends PacketRegistry {
+public class ConfigurationPacketRegistry1_20_2 extends DefaultPacketRegistry {
 
     public ConfigurationPacketRegistry1_20_2(boolean clientside) {
         super(clientside);

@@ -19,9 +19,9 @@ package net.raphimc.netminecraft.packet.registry.impl;
 
 import net.raphimc.netminecraft.constants.MCPackets;
 import net.raphimc.netminecraft.packet.impl.handshaking.C2SHandshakingClientIntentionPacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class HandshakingPacketRegistry extends PacketRegistry {
+public class HandshakingPacketRegistry extends DefaultPacketRegistry {
 
     public HandshakingPacketRegistry(boolean clientside) {
         super(clientside);

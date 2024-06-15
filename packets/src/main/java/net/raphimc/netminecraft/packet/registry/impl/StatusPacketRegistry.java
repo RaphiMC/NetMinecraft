@@ -22,9 +22,9 @@ import net.raphimc.netminecraft.packet.impl.status.C2SStatusPingRequestPacket;
 import net.raphimc.netminecraft.packet.impl.status.C2SStatusRequestPacket;
 import net.raphimc.netminecraft.packet.impl.status.S2CStatusPongResponsePacket;
 import net.raphimc.netminecraft.packet.impl.status.S2CStatusResponsePacket;
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class StatusPacketRegistry extends PacketRegistry {
+public class StatusPacketRegistry extends DefaultPacketRegistry {
 
     public StatusPacketRegistry(boolean clientside) {
         super(clientside);

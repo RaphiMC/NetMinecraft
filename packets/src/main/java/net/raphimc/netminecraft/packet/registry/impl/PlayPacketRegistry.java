@@ -17,9 +17,9 @@
  */
 package net.raphimc.netminecraft.packet.registry.impl;
 
-import net.raphimc.netminecraft.packet.registry.PacketRegistry;
+import net.raphimc.netminecraft.packet.registry.DefaultPacketRegistry;
 
-public class PlayPacketRegistry extends PacketRegistry {
+public class PlayPacketRegistry extends DefaultPacketRegistry {
 
     public PlayPacketRegistry(boolean clientside) {
         super(clientside);
