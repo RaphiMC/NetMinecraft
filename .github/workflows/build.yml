@@ -19,12 +19,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Upload NetMinecraft-core artifacts to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: NetMinecraft-core
           path: core/build/libs/
       - name: Upload NetMinecraft-packets artifacts to GitHub
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: NetMinecraft-packets
           path: packets/build/libs/
