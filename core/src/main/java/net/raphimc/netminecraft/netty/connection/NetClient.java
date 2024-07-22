@@ -47,7 +47,6 @@ public class NetClient {
                 .channel(channelType.tcpClientChannelClass())
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.IP_TOS, 0x18)
                 .handler(this.channelInitializerSupplier.apply(this.handlerSupplier));
 
         this.channelFuture = bootstrap.register().syncUninterruptibly();

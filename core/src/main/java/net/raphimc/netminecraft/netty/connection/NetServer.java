@@ -48,7 +48,6 @@ public class NetServer {
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childOption(ChannelOption.IP_TOS, 0x18)
                 .childHandler(this.channelInitializerSupplier.apply(this.handlerSupplier));
 
         this.channelFuture = bootstrap.register().syncUninterruptibly();
