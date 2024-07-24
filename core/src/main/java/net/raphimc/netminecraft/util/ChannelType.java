@@ -22,6 +22,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.*;
 import io.netty.channel.kqueue.*;
+import io.netty.channel.local.LocalChannel;
+import io.netty.channel.local.LocalServerChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -34,6 +36,7 @@ public enum ChannelType {
     NIO(NioSocketChannel.class, NioDatagramChannel.class, LazyLoadGroup.CLIENT_NIO_EVENTLOOP, NioServerSocketChannel.class, NioDatagramChannel.class, LazyLoadGroup.SERVER_NIO_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_NIO_PARENT_EVENTLOOP),
     EPOLL(EpollSocketChannel.class, EpollDatagramChannel.class, LazyLoadGroup.CLIENT_EPOLL_EVENTLOOP, EpollServerSocketChannel.class, EpollDatagramChannel.class, LazyLoadGroup.SERVER_EPOLL_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_EPOLL_PARENT_EVENTLOOP),
     KQUEUE(KQueueSocketChannel.class, KQueueDatagramChannel.class, LazyLoadGroup.CLIENT_KQUEUE_EVENTLOOP, KQueueServerSocketChannel.class, KQueueDatagramChannel.class, LazyLoadGroup.SERVER_KQUEUE_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_KQUEUE_PARENT_EVENTLOOP),
+    LOCAL(LocalChannel.class, LocalChannel.class, LazyLoadGroup.CLIENT_LOCAL_EVENTLOOP, LocalServerChannel.class, LocalServerChannel.class, LazyLoadGroup.SERVER_LOCAL_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_LOCAL_PARENT_EVENTLOOP),
 
     UNIX_EPOLL(EpollDomainSocketChannel.class, EpollDomainDatagramChannel.class, LazyLoadGroup.CLIENT_EPOLL_EVENTLOOP, EpollServerDomainSocketChannel.class, EpollDomainDatagramChannel.class, LazyLoadGroup.SERVER_EPOLL_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_EPOLL_PARENT_EVENTLOOP),
     UNIX_KQUEUE(KQueueDomainSocketChannel.class, KQueueDomainDatagramChannel.class, LazyLoadGroup.CLIENT_KQUEUE_EVENTLOOP, KQueueServerDomainSocketChannel.class, KQueueDomainDatagramChannel.class, LazyLoadGroup.SERVER_KQUEUE_CHILD_EVENTLOOP, LazyLoadGroup.SERVER_KQUEUE_PARENT_EVENTLOOP),

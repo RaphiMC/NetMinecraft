@@ -17,6 +17,7 @@
  */
 package net.raphimc.netminecraft.util;
 
+import io.netty.channel.DefaultEventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -38,6 +39,11 @@ public abstract class LazyLoadGroup<T> {
             return new KQueueEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty KQueue Client IO #%d").setDaemon(true).build());
         }
     };
+    public static final LazyLoadGroup<DefaultEventLoopGroup> CLIENT_LOCAL_EVENTLOOP = new LazyLoadGroup<DefaultEventLoopGroup>() {
+        protected DefaultEventLoopGroup load() {
+            return new DefaultEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty Local Client IO #%d").setDaemon(true).build());
+        }
+    };
 
     public static final LazyLoadGroup<NioEventLoopGroup> SERVER_NIO_PARENT_EVENTLOOP = new LazyLoadGroup<NioEventLoopGroup>() {
         protected NioEventLoopGroup load() {
@@ -54,6 +60,11 @@ public abstract class LazyLoadGroup<T> {
             return new KQueueEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty KQueue Server IO #%d").setDaemon(true).build());
         }
     };
+    public static final LazyLoadGroup<DefaultEventLoopGroup> SERVER_LOCAL_PARENT_EVENTLOOP = new LazyLoadGroup<DefaultEventLoopGroup>() {
+        protected DefaultEventLoopGroup load() {
+            return new DefaultEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty Local Server IO #%d").setDaemon(true).build());
+        }
+    };
 
     public static final LazyLoadGroup<NioEventLoopGroup> SERVER_NIO_CHILD_EVENTLOOP = new LazyLoadGroup<NioEventLoopGroup>() {
         protected NioEventLoopGroup load() {
@@ -68,6 +79,11 @@ public abstract class LazyLoadGroup<T> {
     public static final LazyLoadGroup<KQueueEventLoopGroup> SERVER_KQUEUE_CHILD_EVENTLOOP = new LazyLoadGroup<KQueueEventLoopGroup>() {
         protected KQueueEventLoopGroup load() {
             return new KQueueEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty KQueue Server Child IO #%d").setDaemon(true).build());
+        }
+    };
+    public static final LazyLoadGroup<DefaultEventLoopGroup> SERVER_LOCAL_CHILD_EVENTLOOP = new LazyLoadGroup<DefaultEventLoopGroup>() {
+        protected DefaultEventLoopGroup load() {
+            return new DefaultEventLoopGroup(0, new ThreadFactoryBuilder().setNameFormat("Netty Local Server Child IO #%d").setDaemon(true).build());
         }
     };
 
