@@ -18,10 +18,10 @@
 package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CTransferPacket implements IPacket {
+public abstract class S2CTransferPacket implements Packet {
 
     public String host;
     public int port;
@@ -35,13 +35,13 @@ public class S2CTransferPacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.host = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
         this.port = PacketTypes.readVarInt(byteBuf);
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         PacketTypes.writeString(byteBuf, this.host);
         PacketTypes.writeVarInt(byteBuf, this.port);
     }

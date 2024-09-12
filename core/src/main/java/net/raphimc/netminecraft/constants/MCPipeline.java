@@ -23,7 +23,7 @@ import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.util.AttributeKey;
 import net.raphimc.netminecraft.netty.codec.*;
 import net.raphimc.netminecraft.netty.crypto.AESEncryption;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
 import java.util.function.Supplier;
@@ -48,7 +48,7 @@ public class MCPipeline {
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_SIZER_HANDLER = PacketSizer::new;
     public static final Supplier<ChannelHandler> DEFAULT_FLOW_CONTROL_HANDLER = NoReadFlowControlHandler::new;
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_COMPRESSION_HANDLER = PacketCompressor::new;
-    public static final Supplier<ByteToMessageCodec<IPacket>> DEFAULT_PACKET_CODEC_HANDLER = PacketCodec::new;
+    public static final Supplier<ByteToMessageCodec<Packet>> DEFAULT_PACKET_CODEC_HANDLER = PacketCodec::new;
     // Optimized handlers
     public static final Supplier<ByteToMessageCodec<ByteBuf>> OPTIMIZED_SIZER_HANDLER = OptimizedPacketSizer::new;
 
@@ -57,7 +57,7 @@ public class MCPipeline {
     public static Supplier<ByteToMessageCodec<ByteBuf>> SIZER_HANDLER;
     public static Supplier<ChannelHandler> FLOW_CONTROL_HANDLER;
     public static Supplier<ByteToMessageCodec<ByteBuf>> COMPRESSION_HANDLER;
-    public static Supplier<ByteToMessageCodec<IPacket>> PACKET_CODEC_HANDLER;
+    public static Supplier<ByteToMessageCodec<Packet>> PACKET_CODEC_HANDLER;
 
     static {
         useDefaultPipeline();

@@ -18,19 +18,16 @@
 package net.raphimc.netminecraft.packet.impl.status;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 
-public class C2SStatusRequestPacket implements IPacket {
+public class C2SStatusRequestPacket implements Packet {
 
-    public C2SStatusRequestPacket() {
+    @Override
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
-    }
-
-    @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
 }

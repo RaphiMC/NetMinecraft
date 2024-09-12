@@ -15,31 +15,49 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginCompressionPacket implements Packet {
+public abstract class S2CCustomPayloadPacket implements Packet {
 
-    public int compressionThreshold;
+    public String channel;
+    public byte[] data;
 
-    public S2CLoginCompressionPacket() {
+    public S2CCustomPayloadPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
+    public S2CCustomPayloadPacket(final String channel, final byte[] data) {
+        this.channel = channel;
+        this.data = data;
     }
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
+        this.channel = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        final int length;
+        if (protocolVersion <= MCVersion.v1_7_6) {
+            length = byteBuf.readShort();
+        } else {
+            length = byteBuf.readableBytes();
+        }
+        this.data = new byte[length];
+        byteBuf.readBytes(this.data);
+        if (protocolVersion <= MCVersion.v1_7_6) {
+            byteBuf.skipBytes(byteBuf.readableBytes());
+        }
     }
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+        PacketTypes.writeString(byteBuf, this.channel);
+        if (protocolVersion <= MCVersion.v1_7_6) {
+            byteBuf.writeShort(this.data.length);
+        }
+        byteBuf.writeBytes(this.data);
     }
 
 }

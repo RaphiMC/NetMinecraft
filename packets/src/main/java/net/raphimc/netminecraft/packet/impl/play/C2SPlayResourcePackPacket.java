@@ -15,31 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.play;
 
-import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.Packet;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.impl.common.C2SResourcePackPacket;
 
-public class S2CLoginCompressionPacket implements Packet {
+import java.util.UUID;
 
-    public int compressionThreshold;
+public class C2SPlayResourcePackPacket extends C2SResourcePackPacket {
 
-    public S2CLoginCompressionPacket() {
+    public C2SPlayResourcePackPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
+    public C2SPlayResourcePackPacket(final int status) {
+        super(status);
     }
 
-    @Override
-    public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
+    public C2SPlayResourcePackPacket(final int status, final UUID packId) {
+        super(status, packId);
     }
 
-    @Override
-    public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+    public C2SPlayResourcePackPacket(final int status, final UUID packId, final String hash) {
+        super(status, packId, hash);
     }
 
 }

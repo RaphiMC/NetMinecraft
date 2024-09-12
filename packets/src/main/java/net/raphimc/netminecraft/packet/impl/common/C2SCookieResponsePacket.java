@@ -18,10 +18,10 @@
 package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SCookieResponsePacket implements IPacket {
+public abstract class C2SCookieResponsePacket implements Packet {
 
     public String key;
     public byte[] payload;
@@ -35,7 +35,7 @@ public class C2SCookieResponsePacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.key = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
         if (byteBuf.readBoolean()) {
             this.payload = PacketTypes.readByteArray(byteBuf, 5120);
@@ -45,7 +45,7 @@ public class C2SCookieResponsePacket implements IPacket {
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         PacketTypes.writeString(byteBuf, this.key);
         byteBuf.writeBoolean(this.payload != null);
         if (this.payload != null) {

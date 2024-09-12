@@ -19,12 +19,13 @@ package net.raphimc.netminecraft.packet;
 
 import io.netty.buffer.ByteBuf;
 
-public class UnknownPacket implements IPacket {
+public class UnknownPacket implements Packet {
 
     public int packetId;
     public byte[] data;
 
-    public UnknownPacket() {
+    public UnknownPacket(final int packetId) {
+        this.packetId = packetId;
     }
 
     public UnknownPacket(final int packetId, final byte[] data) {
@@ -33,12 +34,12 @@ public class UnknownPacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.data = PacketTypes.readReadableBytes(byteBuf);
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         byteBuf.writeBytes(this.data);
     }
 

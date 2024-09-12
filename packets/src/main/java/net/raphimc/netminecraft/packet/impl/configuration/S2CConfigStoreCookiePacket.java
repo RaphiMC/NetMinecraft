@@ -15,31 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.configuration;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginCompressionPacket implements Packet {
+public class S2CConfigStoreCookiePacket implements Packet {
 
-    public int compressionThreshold;
+    public String key;
+    public byte[] payload;
 
-    public S2CLoginCompressionPacket() {
+    public S2CConfigStoreCookiePacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
+    public S2CConfigStoreCookiePacket(final String key, final byte[] payload) {
+        this.key = key;
+        this.payload = payload;
     }
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
+        this.key = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
+        this.payload = PacketTypes.readByteArray(byteBuf, 5120);
     }
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+        PacketTypes.writeString(byteBuf, this.key);
+        PacketTypes.writeByteArray(byteBuf, this.payload);
     }
 
 }

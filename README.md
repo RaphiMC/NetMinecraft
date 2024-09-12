@@ -40,14 +40,14 @@ public class ClientChannelInitializer extends MinecraftChannelInitializer {
     @Override
     protected void initChannel(Channel channel) {
         super.initChannel(channel);
-        channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).set(PacketRegistryUtil.getHandshakeRegistry(false));
+        channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).set(new DefaultPacketRegistry(true, protocolVersion));
     }
 
 }
 ```
 
-From this point on you will receive ``IPacket``s instead of ``ByteBuf``s in your channel handlers.
-You need to switch the packet registry when the state changes yourself.
+From this point on you will receive ``Packet``s instead of ``ByteBuf``s in your channel handlers.
+You need to set the connection state of the ``PacketRegistry`` to the correct state yourself.
 
 ## Example
 ### Client

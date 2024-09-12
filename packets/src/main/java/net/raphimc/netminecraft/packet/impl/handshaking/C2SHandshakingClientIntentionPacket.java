@@ -19,10 +19,10 @@ package net.raphimc.netminecraft.packet.impl.handshaking;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.constants.IntendedState;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SHandshakingClientIntentionPacket implements IPacket {
+public class C2SHandshakingClientIntentionPacket implements Packet {
 
     public int protocolVersion;
     public String address;
@@ -40,7 +40,7 @@ public class C2SHandshakingClientIntentionPacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.protocolVersion = PacketTypes.readVarInt(byteBuf);
         this.address = PacketTypes.readString(byteBuf, 255);
         this.port = byteBuf.readUnsignedShort();
@@ -48,7 +48,7 @@ public class C2SHandshakingClientIntentionPacket implements IPacket {
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         PacketTypes.writeVarInt(byteBuf, this.protocolVersion);
         PacketTypes.writeString(byteBuf, this.address);
         byteBuf.writeShort(this.port);

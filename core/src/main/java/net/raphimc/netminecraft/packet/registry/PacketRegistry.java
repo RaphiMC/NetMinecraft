@@ -17,14 +17,20 @@
  */
 package net.raphimc.netminecraft.packet.registry;
 
-import net.raphimc.netminecraft.packet.IPacket;
+import io.netty.buffer.ByteBuf;
+import net.raphimc.netminecraft.constants.ConnectionState;
+import net.raphimc.netminecraft.packet.Packet;
 
 public interface PacketRegistry {
 
-    IPacket getPacketById(final int packetId);
+    Packet createPacket(final int packetId, final ByteBuf byteBuf);
 
-    Class<? extends IPacket> getTargetClassByPacket(final Class<? extends IPacket> packetClass);
+    int getPacketId(final Packet packet);
 
-    int getIdByPacket(final Class<? extends IPacket> packetClass);
+    int getProtocolVersion();
+
+    ConnectionState getConnectionState();
+
+    void setConnectionState(final ConnectionState connectionState);
 
 }

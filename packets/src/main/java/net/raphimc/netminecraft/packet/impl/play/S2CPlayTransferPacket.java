@@ -15,31 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.play;
 
-import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.Packet;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.impl.common.S2CTransferPacket;
 
-public class S2CLoginCompressionPacket implements Packet {
+public class S2CPlayTransferPacket extends S2CTransferPacket {
 
-    public int compressionThreshold;
-
-    public S2CLoginCompressionPacket() {
+    public S2CPlayTransferPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
-    }
-
-    @Override
-    public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
-    }
-
-    @Override
-    public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+    public S2CPlayTransferPacket(final String host, final int port) {
+        super(host, port);
     }
 
 }

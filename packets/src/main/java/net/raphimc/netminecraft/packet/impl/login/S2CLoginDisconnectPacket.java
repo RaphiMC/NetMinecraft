@@ -18,28 +18,35 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
+import net.lenni0451.mcstructs.text.ATextComponent;
+import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.SerializerTypes;
 
-public class S2CLoginCompressionPacket implements Packet {
+public class S2CLoginDisconnectPacket implements Packet {
 
-    public int compressionThreshold;
+    public ATextComponent reason;
 
-    public S2CLoginCompressionPacket() {
+    public S2CLoginDisconnectPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
+    public S2CLoginDisconnectPacket(final ATextComponent reason) {
+        this.reason = reason;
     }
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
+        if (protocolVersion <= MCVersion.v1_8) {
+            this.reason = SerializerTypes.getTextComponentSerializer(protocolVersion).deserialize(PacketTypes.readString(byteBuf, 262144));
+        } else {
+            this.reason = SerializerTypes.getTextComponentSerializer(protocolVersion).deserializeLenientReader(PacketTypes.readString(byteBuf, 262144));
+        }
     }
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+        PacketTypes.writeString(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).serialize(this.reason));
     }
 
 }

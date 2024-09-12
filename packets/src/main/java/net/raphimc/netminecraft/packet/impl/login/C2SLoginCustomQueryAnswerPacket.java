@@ -18,10 +18,10 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class C2SLoginCustomQueryAnswerPacket implements IPacket {
+public class C2SLoginCustomQueryAnswerPacket implements Packet {
 
     public int queryId;
     public byte[] response;
@@ -35,7 +35,7 @@ public class C2SLoginCustomQueryAnswerPacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.queryId = PacketTypes.readVarInt(byteBuf);
         if (byteBuf.readBoolean()) {
             final int length = byteBuf.readableBytes();
@@ -51,7 +51,7 @@ public class C2SLoginCustomQueryAnswerPacket implements IPacket {
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         PacketTypes.writeVarInt(byteBuf, this.queryId);
         byteBuf.writeBoolean(this.response != null);
         if (this.response != null) {

@@ -18,10 +18,10 @@
 package net.raphimc.netminecraft.packet.impl.status;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CStatusResponsePacket implements IPacket {
+public class S2CStatusResponsePacket implements Packet {
 
     public String statusJson;
 
@@ -33,12 +33,12 @@ public class S2CStatusResponsePacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.statusJson = PacketTypes.readString(byteBuf, Short.MAX_VALUE);
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         PacketTypes.writeString(byteBuf, this.statusJson);
     }
 

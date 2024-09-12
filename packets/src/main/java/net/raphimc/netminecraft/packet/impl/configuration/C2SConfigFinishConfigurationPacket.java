@@ -18,19 +18,16 @@
 package net.raphimc.netminecraft.packet.impl.configuration;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 
-public class C2SConfigFinishConfigurationPacket implements IPacket {
+public class C2SConfigFinishConfigurationPacket implements Packet {
 
-    public C2SConfigFinishConfigurationPacket() {
+    @Override
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
-    }
-
-    @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
 }

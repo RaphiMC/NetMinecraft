@@ -15,31 +15,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
 
-public class S2CLoginCompressionPacket implements Packet {
+import java.util.UUID;
 
-    public int compressionThreshold;
+public abstract class S2CResourcePackPopPacket implements Packet {
 
-    public S2CLoginCompressionPacket() {
+    public UUID packId;
+
+    public S2CResourcePackPopPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
+    public S2CResourcePackPopPacket(final UUID packId) {
+        this.packId = packId;
     }
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
+        if (byteBuf.readBoolean()) {
+            this.packId = PacketTypes.readUuid(byteBuf);
+        } else {
+            this.packId = null;
+        }
     }
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+        byteBuf.writeBoolean(this.packId != null);
+        if (this.packId != null) {
+            PacketTypes.writeUuid(byteBuf, this.packId);
+        }
     }
 
 }

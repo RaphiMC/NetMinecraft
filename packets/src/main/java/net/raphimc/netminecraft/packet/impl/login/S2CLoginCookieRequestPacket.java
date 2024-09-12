@@ -17,29 +17,15 @@
  */
 package net.raphimc.netminecraft.packet.impl.login;
 
-import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.Packet;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.impl.common.S2CCookieRequestPacket;
 
-public class S2CLoginCompressionPacket implements Packet {
+public class S2CLoginCookieRequestPacket extends S2CCookieRequestPacket {
 
-    public int compressionThreshold;
-
-    public S2CLoginCompressionPacket() {
+    public S2CLoginCookieRequestPacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
-    }
-
-    @Override
-    public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
-    }
-
-    @Override
-    public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+    public S2CLoginCookieRequestPacket(final String key) {
+        this.key = key;
     }
 
 }

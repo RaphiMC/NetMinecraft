@@ -18,19 +18,16 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 
-public class C2SLoginAcknowledgedPacket implements IPacket {
+public class C2SLoginAcknowledgedPacket implements Packet {
 
-    public C2SLoginAcknowledgedPacket() {
+    @Override
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
-    }
-
-    @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
     }
 
 }

@@ -18,9 +18,9 @@
 package net.raphimc.netminecraft.packet.impl.status;
 
 import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 
-public class S2CStatusPongResponsePacket implements IPacket {
+public class S2CStatusPongResponsePacket implements Packet {
 
     public long startTime;
 
@@ -32,12 +32,12 @@ public class S2CStatusPongResponsePacket implements IPacket {
     }
 
     @Override
-    public void read(ByteBuf byteBuf) {
+    public void read(final ByteBuf byteBuf, final int protocolVersion) {
         this.startTime = byteBuf.readLong();
     }
 
     @Override
-    public void write(ByteBuf byteBuf) {
+    public void write(final ByteBuf byteBuf, final int protocolVersion) {
         byteBuf.writeLong(this.startTime);
     }
 

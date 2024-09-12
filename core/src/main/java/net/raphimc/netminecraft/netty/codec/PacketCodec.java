@@ -21,62 +21,38 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import net.raphimc.netminecraft.constants.MCPipeline;
-import net.raphimc.netminecraft.packet.IPacket;
+import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
-import net.raphimc.netminecraft.packet.UnknownPacket;
+import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
-public class PacketCodec extends ByteToMessageCodec<IPacket> {
+public class PacketCodec extends ByteToMessageCodec<Packet> {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        if (ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get() == null) {
+        final PacketRegistry packetRegistry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+        if (packetRegistry == null) {
             out.add(in.readBytes(in.readableBytes()));
             return;
         }
 
         if (in.readableBytes() != 0) {
             final int packetId = PacketTypes.readVarInt(in);
-            final IPacket packet = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getPacketById(packetId);
-            if (packet instanceof UnknownPacket) {
-                ((UnknownPacket) packet).packetId = packetId;
-            }
-            packet.read(in);
+            final Packet packet = packetRegistry.createPacket(packetId, in);
             out.add(packet);
         }
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, IPacket in, ByteBuf out) {
-        if (ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get() == null) {
-            throw new IllegalStateException("Can't write IPacket without a packet registry");
+    protected void encode(ChannelHandlerContext ctx, Packet in, ByteBuf out) {
+        final PacketRegistry packetRegistry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+        if (packetRegistry == null) {
+            throw new IllegalStateException("Can't write Packet without a packet registry");
         }
 
-        final Class<? extends IPacket> targetClass = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getTargetClassByPacket(in.getClass());
-        if (!in.getClass().equals(targetClass)) {
-            try {
-                final IPacket newPacket = targetClass.newInstance();
-                for (Field field : targetClass.getFields()) field.set(newPacket, field.get(in));
-                in = newPacket;
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
-        }
-
-        final int packetId;
-        if (in instanceof UnknownPacket) {
-            packetId = ((UnknownPacket) in).packetId;
-        } else {
-            packetId = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get().getIdByPacket(targetClass);
-            if (packetId == -1) {
-                throw new IllegalStateException("Tried to write not registered packet: " + targetClass.getName());
-            }
-        }
-
-        PacketTypes.writeVarInt(out, packetId);
-        in.write(out);
+        PacketTypes.writeVarInt(out, packetRegistry.getPacketId(in));
+        in.write(out, packetRegistry.getProtocolVersion());
     }
 
 }

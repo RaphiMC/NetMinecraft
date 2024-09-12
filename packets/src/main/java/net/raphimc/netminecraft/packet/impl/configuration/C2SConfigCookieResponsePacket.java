@@ -15,31 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.raphimc.netminecraft.packet.impl.login;
+package net.raphimc.netminecraft.packet.impl.configuration;
 
-import io.netty.buffer.ByteBuf;
-import net.raphimc.netminecraft.packet.Packet;
-import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.impl.common.C2SCookieResponsePacket;
 
-public class S2CLoginCompressionPacket implements Packet {
+public class C2SConfigCookieResponsePacket extends C2SCookieResponsePacket {
 
-    public int compressionThreshold;
-
-    public S2CLoginCompressionPacket() {
+    public C2SConfigCookieResponsePacket() {
     }
 
-    public S2CLoginCompressionPacket(final int compressionThreshold) {
-        this.compressionThreshold = compressionThreshold;
-    }
-
-    @Override
-    public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        this.compressionThreshold = PacketTypes.readVarInt(byteBuf);
-    }
-
-    @Override
-    public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        PacketTypes.writeVarInt(byteBuf, this.compressionThreshold);
+    public C2SConfigCookieResponsePacket(final String key, final byte[] payload) {
+        super(key, payload);
     }
 
 }
