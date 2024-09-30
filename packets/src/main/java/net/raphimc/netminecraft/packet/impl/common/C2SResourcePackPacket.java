@@ -52,7 +52,7 @@ public abstract class C2SResourcePackPacket implements Packet {
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_9 && protocolVersion <= MCVersion.v1_20_2) {
+        if (protocolVersion <= MCVersion.v1_9_3) {
             this.hash = PacketTypes.readString(byteBuf, 40); // hash
         }
         if (protocolVersion >= MCVersion.v1_20_3) {
@@ -63,7 +63,7 @@ public abstract class C2SResourcePackPacket implements Packet {
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_9 && protocolVersion <= MCVersion.v1_20_2) {
+        if (protocolVersion <= MCVersion.v1_9_3) {
             PacketTypes.writeString(byteBuf, this.hash); // hash
         }
         if (protocolVersion >= MCVersion.v1_20_3) {
