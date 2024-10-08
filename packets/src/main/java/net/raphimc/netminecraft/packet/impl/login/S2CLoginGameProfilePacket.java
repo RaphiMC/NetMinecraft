@@ -77,7 +77,7 @@ public class S2CLoginGameProfilePacket implements Packet {
                 this.properties.add(new String[]{name, value, signature});
             }
         }
-        if (protocolVersion >= MCVersion.v1_20_5) {
+        if (protocolVersion >= MCVersion.v1_20_5 && protocolVersion <= MCVersion.v1_21) {
             this.strictErrorHandling = byteBuf.readBoolean();
         }
     }
@@ -103,7 +103,7 @@ public class S2CLoginGameProfilePacket implements Packet {
                 }
             }
         }
-        if (protocolVersion >= MCVersion.v1_20_5) {
+        if (protocolVersion >= MCVersion.v1_20_5 && protocolVersion <= MCVersion.v1_21) {
             byteBuf.writeBoolean(this.strictErrorHandling);
         }
     }
