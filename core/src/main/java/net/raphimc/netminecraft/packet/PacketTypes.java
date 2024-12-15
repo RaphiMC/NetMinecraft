@@ -93,7 +93,7 @@ public class PacketTypes {
     }
 
     public static byte[] readByteArray(final ByteBuf byteBuf) {
-        return readByteArray(byteBuf, byteBuf.readableBytes());
+        return readByteArray(byteBuf, Short.MAX_VALUE);
     }
 
     public static byte[] readByteArray(final ByteBuf byteBuf, final int maxSize) {
@@ -111,8 +111,33 @@ public class PacketTypes {
         return writeVarInt(byteBuf, array.length).writeBytes(array);
     }
 
+    public static int[] readVarIntArray(final ByteBuf byteBuf) {
+        return readVarIntArray(byteBuf, Short.MAX_VALUE);
+    }
+
+    public static int[] readVarIntArray(final ByteBuf byteBuf, final int maxSize) {
+        final int length = readVarInt(byteBuf);
+        if (length > maxSize) {
+            throw new DecoderException("The received integer array is bigger than the maximum allowed (" + length + " > " + maxSize + ")");
+        } else {
+            final int[] array = new int[length];
+            for (int i = 0; i < length; i++) {
+                array[i] = readVarInt(byteBuf);
+            }
+            return array;
+        }
+    }
+
+    public static ByteBuf writeVarIntArray(final ByteBuf byteBuf, final int[] array) {
+        writeVarInt(byteBuf, array.length);
+        for (int i : array) {
+            writeVarInt(byteBuf, i);
+        }
+        return byteBuf;
+    }
+
     public static byte[] readShortByteArray(final ByteBuf byteBuf) {
-        return readShortByteArray(byteBuf, byteBuf.readableBytes());
+        return readShortByteArray(byteBuf, Short.MAX_VALUE);
     }
 
     public static byte[] readShortByteArray(final ByteBuf byteBuf, final int maxSize) {
