@@ -24,8 +24,8 @@ public class C2SConfigKeepAlivePacket extends S2CKeepAlivePacket {
     public C2SConfigKeepAlivePacket() {
     }
 
-    public C2SConfigKeepAlivePacket(final long keepAliveId) {
-        super(keepAliveId);
+    public C2SConfigKeepAlivePacket(final long id) {
+        super(id);
     }
 
 }

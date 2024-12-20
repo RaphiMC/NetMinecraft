@@ -24,29 +24,35 @@ import net.raphimc.netminecraft.packet.PacketTypes;
 
 public abstract class C2SKeepAlivePacket implements Packet {
 
-    public long keepAliveId;
+    public long id;
 
     public C2SKeepAlivePacket() {
     }
 
-    public C2SKeepAlivePacket(final long keepAliveId) {
-        this.keepAliveId = keepAliveId;
+    public C2SKeepAlivePacket(final long id) {
+        this.id = id;
     }
 
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
         if (protocolVersion >= MCVersion.v1_12_2) {
-            this.keepAliveId = byteBuf.readLong();
+            this.id = byteBuf.readLong();
         } else if (protocolVersion >= MCVersion.v1_8) {
-            this.keepAliveId = PacketTypes.readVarInt(byteBuf);
+            this.id = PacketTypes.readVarInt(byteBuf);
         } else {
-            this.keepAliveId = byteBuf.readInt();
+            this.id = byteBuf.readInt();
         }
     }
 
     @Override
     public void write(final ByteBuf byteBuf, final int protocolVersion) {
-        byteBuf.writeLong(this.keepAliveId);
+        if (protocolVersion >= MCVersion.v1_12_2) {
+            byteBuf.writeLong(this.id);
+        } else if (protocolVersion >= MCVersion.v1_8) {
+            PacketTypes.writeVarInt(byteBuf, (int) this.id);
+        } else {
+            byteBuf.writeInt((int) this.id);
+        }
     }
 
 }

@@ -24,7 +24,8 @@ public class S2CPlayKeepAlivePacket extends S2CKeepAlivePacket {
     public S2CPlayKeepAlivePacket() {
     }
 
-    public S2CPlayKeepAlivePacket(final long keepAliveId) {
-        super(keepAliveId);
+    public S2CPlayKeepAlivePacket(final long id) {
+        super(id);
     }
+
 }
