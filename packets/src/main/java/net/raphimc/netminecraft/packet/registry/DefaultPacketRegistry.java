@@ -53,11 +53,13 @@ public class DefaultPacketRegistry extends PacketRegistryImpl {
 
         this.registerPacket(MCPackets.C2S_CONFIG_CUSTOM_PAYLOAD, C2SConfigCustomPayloadPacket::new);
         this.registerPacket(MCPackets.C2S_CONFIG_FINISH_CONFIGURATION, C2SConfigFinishConfigurationPacket::new);
+        this.registerPacket(MCPackets.C2S_CONFIG_KEEP_ALIVE, C2SConfigKeepAlivePacket::new);
         this.registerPacket(MCPackets.C2S_CONFIG_RESOURCE_PACK, C2SConfigResourcePackPacket::new);
         this.registerPacket(MCPackets.C2S_CONFIG_COOKIE_RESPONSE, C2SConfigCookieResponsePacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_CUSTOM_PAYLOAD, S2CConfigCustomPayloadPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_DISCONNECT, S2CConfigDisconnectPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION, S2CConfigFinishConfigurationPacket::new);
+        this.registerPacket(MCPackets.S2C_CONFIG_KEEP_ALIVE, S2CConfigKeepAlivePacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_RESOURCE_PACK, S2CConfigResourcePackPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_RESOURCE_PACK_POP, S2CConfigResourcePackPopPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_RESOURCE_PACK_PUSH, S2CConfigResourcePackPushPacket::new);
@@ -68,6 +70,8 @@ public class DefaultPacketRegistry extends PacketRegistryImpl {
         this.registerPacket(MCPackets.C2S_CONFIGURATION_ACKNOWLEDGED, C2SPlayConfigurationAcknowledgedPacket::new);
         this.registerPacket(MCPackets.C2S_RESOURCE_PACK, C2SPlayResourcePackPacket::new);
         this.registerPacket(MCPackets.C2S_CUSTOM_PAYLOAD, C2SPlayCustomPayloadPacket::new);
+        this.registerPacket(MCPackets.C2S_KEEP_ALIVE, C2SPlayKeepAlivePacket::new);
+        this.registerPacket(MCPackets.S2C_KEEP_ALIVE, S2CPlayKeepAlivePacket::new);
         this.registerPacket(MCPackets.S2C_START_CONFIGURATION, S2CPlayStartConfigurationPacket::new);
         this.registerPacket(MCPackets.S2C_DISCONNECT, S2CPlayDisconnectPacket::new);
         this.registerPacket(MCPackets.S2C_CUSTOM_PAYLOAD, S2CPlayCustomPayloadPacket::new);
