@@ -52,7 +52,7 @@ You need to set the connection state of the ``PacketRegistry`` to the correct st
 ## Example
 ### Client
 ```java
-NetClient client = new NetClient(new Supplier<ChannelHandler>() {
+NetClient client = new NetClient(new MinecraftChannelInitializer(new Supplier<ChannelHandler>() {
     @Override
     public ChannelHandler get() {
         return new SimpleChannelInboundHandler<ByteBuf>() {
@@ -83,7 +83,7 @@ NetClient client = new NetClient(new Supplier<ChannelHandler>() {
             }
         };
     }
-});
+}));
 ByteBuf handshake = Unpooled.buffer();
 PacketTypes.writeVarInt(handshake, 0); // packet id
 PacketTypes.writeVarInt(handshake, 47); // protocol version
@@ -101,72 +101,61 @@ client.getChannel().closeFuture().syncUninterruptibly();
 ```
 ### Server
 ```java
-NetServer server = new NetServer(new Supplier<ChannelHandler>() {
+NetServer server = new NetServer(new MinecraftChannelInitializer(() -> new SimpleChannelInboundHandler<ByteBuf>() {
     @Override
-    public ChannelHandler get() {
-        return new SimpleChannelInboundHandler<ByteBuf>() {
-            @Override
-            public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                super.channelActive(ctx);
-                System.out.println("New connection from " + ctx.channel().remoteAddress());
-            }
-
-            @Override
-            public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                super.channelInactive(ctx);
-                System.out.println(ctx.channel().remoteAddress() + " closed connection");
-            }
-
-            @Override
-            protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
-                // Read packets here
-            }
-        };
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        System.out.println("New connection from " + ctx.channel().remoteAddress());
     }
-});
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        System.out.println(ctx.channel().remoteAddress() + " closed connection");
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) throws Exception {
+        // Read packets here
+    }
+}));
 server.bind(new InetSocketAddress("0.0.0.0", 25565), true);
 ```
 ### Proxy
 ```java
-final NetServer server = new NetServer(() -> new SimpleChannelInboundHandler<ByteBuf>() {
-    private Channel otherChannel;
-    private final NetClient client = new NetClient(new Supplier<ChannelHandler>() {
-        @Override
-        public ChannelHandler get() {
-            return new SimpleChannelInboundHandler<ByteBuf>() {
-
-                @Override
-                protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
-                    otherChannel.writeAndFlush(byteBuf.retain());
-                }
-            };
-        }
-    }, channelHandlerSupplier -> new ChannelInitializer<Channel>() {
-        @Override
-        protected void initChannel(Channel channel) {
-        channel.pipeline().addLast(channelHandlerSupplier.get());
-        }
-    });
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        this.otherChannel = ctx.channel();
-        this.client.connect(MinecraftServerAddress.ofResolved("localhost"));
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
-        this.client.getChannel().writeAndFlush(byteBuf.retain());
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        this.client.getChannel().close().syncUninterruptibly();
-    }
-}, channelHandlerSupplier -> new ChannelInitializer<Channel>() {
+final NetServer server = new NetServer(new ChannelInitializer<Channel>() {
     @Override
     protected void initChannel(Channel channel) {
-        channel.pipeline().addLast(channelHandlerSupplier.get());
+        channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+            private Channel otherChannel;
+            private final NetClient client = new NetClient(new ChannelInitializer<Channel>() {
+                @Override
+                protected void initChannel(Channel channel) {
+                    channel.pipeline().addLast(new SimpleChannelInboundHandler<ByteBuf>() {
+                        @Override
+                        protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
+                            otherChannel.writeAndFlush(byteBuf.retain());
+                        }
+                    });
+                }
+            });
+
+            @Override
+            public void channelActive(ChannelHandlerContext ctx) {
+                this.otherChannel = ctx.channel();
+                this.client.connect(MinecraftServerAddress.ofResolved("localhost")).syncUninterruptibly();
+            }
+
+            @Override
+            protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
+                this.client.getChannel().writeAndFlush(byteBuf.retain());
+            }
+
+            @Override
+            public void channelInactive(ChannelHandlerContext ctx) {
+                this.client.getChannel().close().syncUninterruptibly();
+            }
+        });
     }
 });
 server.bind(new InetSocketAddress("0.0.0.0", 25565));

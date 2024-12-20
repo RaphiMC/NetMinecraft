@@ -18,27 +18,22 @@
 package net.raphimc.netminecraft.netty.connection;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import net.raphimc.netminecraft.util.ChannelType;
 
 import java.net.SocketAddress;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class NetServer {
 
-    protected final Supplier<ChannelHandler> handlerSupplier;
-    protected final Function<Supplier<ChannelHandler>, ChannelInitializer<Channel>> channelInitializerSupplier;
+    protected final ChannelInitializer<Channel> channelInitializer;
 
     protected ChannelFuture channelFuture;
 
-    public NetServer(final Supplier<ChannelHandler> handlerSupplier) {
-        this(handlerSupplier, MinecraftChannelInitializer::new);
-    }
-
-    public NetServer(final Supplier<ChannelHandler> handlerSupplier, final Function<Supplier<ChannelHandler>, ChannelInitializer<Channel>> channelInitializerSupplier) {
-        this.handlerSupplier = handlerSupplier;
-        this.channelInitializerSupplier = channelInitializerSupplier;
+    public NetServer(final ChannelInitializer<Channel> channelInitializer) {
+        this.channelInitializer = channelInitializer;
     }
 
     public void initialize(final ChannelType channelType, final ServerBootstrap bootstrap) {
@@ -48,7 +43,7 @@ public class NetServer {
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
-                .childHandler(this.channelInitializerSupplier.apply(this.handlerSupplier));
+                .childHandler(this.channelInitializer);
 
         this.channelFuture = bootstrap.register().syncUninterruptibly();
     }
