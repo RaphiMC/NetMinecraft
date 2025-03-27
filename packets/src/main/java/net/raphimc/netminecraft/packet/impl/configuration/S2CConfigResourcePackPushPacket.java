@@ -17,7 +17,7 @@
  */
 package net.raphimc.netminecraft.packet.impl.configuration;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.packet.impl.common.S2CResourcePackPushPacket;
 
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class S2CConfigResourcePackPushPacket extends S2CResourcePackPushPacket {
     public S2CConfigResourcePackPushPacket() {
     }
 
-    public S2CConfigResourcePackPushPacket(final UUID packId, final String url, final String hash, final boolean required, final ATextComponent message) {
+    public S2CConfigResourcePackPushPacket(final UUID packId, final String url, final String hash, final boolean required, final TextComponent message) {
         super(packId, url, hash, required, message);
     }
 

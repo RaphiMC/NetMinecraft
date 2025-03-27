@@ -17,7 +17,7 @@
  */
 package net.raphimc.netminecraft.packet.impl.play;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.packet.impl.common.S2CResourcePackPushPacket;
 
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class S2CPlayResourcePackPushPacket extends S2CResourcePackPushPacket {
     public S2CPlayResourcePackPushPacket() {
     }
 
-    public S2CPlayResourcePackPushPacket(final UUID packId, final String url, final String hash, final boolean required, final ATextComponent message) {
+    public S2CPlayResourcePackPushPacket(final UUID packId, final String url, final String hash, final boolean required, final TextComponent message) {
         super(packId, url, hash, required, message);
     }
 

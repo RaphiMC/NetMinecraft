@@ -17,7 +17,7 @@
  */
 package net.raphimc.netminecraft.packet.impl.configuration;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.packet.impl.common.S2CDisconnectPacket;
 
 public class S2CConfigDisconnectPacket extends S2CDisconnectPacket {
@@ -25,7 +25,7 @@ public class S2CConfigDisconnectPacket extends S2CDisconnectPacket {
     public S2CConfigDisconnectPacket() {
     }
 
-    public S2CConfigDisconnectPacket(final ATextComponent reason) {
+    public S2CConfigDisconnectPacket(final TextComponent reason) {
         super(reason);
     }
 

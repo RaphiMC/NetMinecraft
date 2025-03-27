@@ -18,7 +18,7 @@
 package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
@@ -29,12 +29,12 @@ public abstract class S2CResourcePackPacket implements Packet {
     public String url;
     public String hash;
     public boolean required;
-    public ATextComponent message;
+    public TextComponent message;
 
     public S2CResourcePackPacket() {
     }
 
-    public S2CResourcePackPacket(final String url, final String hash, final boolean required, final ATextComponent message) {
+    public S2CResourcePackPacket(final String url, final String hash, final boolean required, final TextComponent message) {
         this.url = url;
         this.hash = hash;
         this.required = required;
@@ -68,7 +68,7 @@ public abstract class S2CResourcePackPacket implements Packet {
                 if (protocolVersion <= MCVersion.v1_20_2) {
                     PacketTypes.writeString(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).serialize(this.message));
                 } else {
-                    PacketTypes.writeUnnamedTag(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).getParentCodec().serializeNbt(this.message));
+                    PacketTypes.writeUnnamedTag(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).getParentCodec().serializeNbtTree(this.message));
                 }
             }
         }

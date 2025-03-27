@@ -18,7 +18,7 @@
 package net.raphimc.netminecraft.packet.impl.common;
 
 import io.netty.buffer.ByteBuf;
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
@@ -26,12 +26,12 @@ import net.raphimc.netminecraft.packet.SerializerTypes;
 
 public abstract class S2CDisconnectPacket implements Packet {
 
-    public ATextComponent reason;
+    public TextComponent reason;
 
     public S2CDisconnectPacket() {
     }
 
-    public S2CDisconnectPacket(final ATextComponent reason) {
+    public S2CDisconnectPacket(final TextComponent reason) {
         this.reason = reason;
     }
 
@@ -40,7 +40,7 @@ public abstract class S2CDisconnectPacket implements Packet {
         if (protocolVersion <= MCVersion.v1_20_2) {
             PacketTypes.writeString(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).serialize(this.reason));
         } else {
-            PacketTypes.writeUnnamedTag(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).getParentCodec().serializeNbt(this.reason));
+            PacketTypes.writeUnnamedTag(byteBuf, SerializerTypes.getTextComponentSerializer(protocolVersion).getParentCodec().serializeNbtTree(this.reason));
         }
     }
 

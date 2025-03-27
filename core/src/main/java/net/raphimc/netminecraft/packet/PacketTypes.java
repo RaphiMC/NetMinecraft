@@ -22,7 +22,7 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
-import net.lenni0451.mcstructs.nbt.INbtTag;
+import net.lenni0451.mcstructs.nbt.NbtTag;
 import net.lenni0451.mcstructs.nbt.io.NbtIO;
 import net.lenni0451.mcstructs.nbt.io.NbtReadTracker;
 
@@ -169,41 +169,41 @@ public class PacketTypes {
         return bytes;
     }
 
-    public static INbtTag readNamedTag(final ByteBuf byteBuf) {
+    public static NbtTag readNamedTag(final ByteBuf byteBuf) {
         return readNamedTag(byteBuf, new NbtReadTracker());
     }
 
-    public static INbtTag readNamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
+    public static NbtTag readNamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
         try {
-            return NbtIO.JAVA.read(new ByteBufInputStream(byteBuf), readTracker);
+            return NbtIO.LATEST.read(new ByteBufInputStream(byteBuf), readTracker);
         } catch (IOException e) {
             throw new DecoderException(e);
         }
     }
 
-    public static void writeNamedTag(final ByteBuf byteBuf, final INbtTag nbt) {
+    public static void writeNamedTag(final ByteBuf byteBuf, final NbtTag nbt) {
         try {
-            NbtIO.JAVA.write(new ByteBufOutputStream(byteBuf), "", nbt);
+            NbtIO.LATEST.write(new ByteBufOutputStream(byteBuf), "", nbt);
         } catch (IOException e) {
             throw new EncoderException(e);
         }
     }
 
-    public static INbtTag readUnnamedTag(final ByteBuf byteBuf) {
+    public static NbtTag readUnnamedTag(final ByteBuf byteBuf) {
         return readUnnamedTag(byteBuf, new NbtReadTracker());
     }
 
-    public static INbtTag readUnnamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
+    public static NbtTag readUnnamedTag(final ByteBuf byteBuf, final NbtReadTracker readTracker) {
         try {
-            return NbtIO.JAVA.readUnnamed(new ByteBufInputStream(byteBuf), readTracker);
+            return NbtIO.LATEST.readUnnamed(new ByteBufInputStream(byteBuf), readTracker);
         } catch (IOException e) {
             throw new DecoderException(e);
         }
     }
 
-    public static void writeUnnamedTag(final ByteBuf byteBuf, final INbtTag nbt) {
+    public static void writeUnnamedTag(final ByteBuf byteBuf, final NbtTag nbt) {
         try {
-            NbtIO.JAVA.writeUnnamed(new ByteBufOutputStream(byteBuf), nbt);
+            NbtIO.LATEST.writeUnnamed(new ByteBufOutputStream(byteBuf), nbt);
         } catch (IOException e) {
             throw new EncoderException(e);
         }

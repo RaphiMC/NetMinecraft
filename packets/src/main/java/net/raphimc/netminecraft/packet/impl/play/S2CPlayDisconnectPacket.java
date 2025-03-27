@@ -17,7 +17,7 @@
  */
 package net.raphimc.netminecraft.packet.impl.play;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.packet.impl.common.S2CDisconnectPacket;
 
 public class S2CPlayDisconnectPacket extends S2CDisconnectPacket {
@@ -25,7 +25,7 @@ public class S2CPlayDisconnectPacket extends S2CDisconnectPacket {
     public S2CPlayDisconnectPacket() {
     }
 
-    public S2CPlayDisconnectPacket(final ATextComponent reason) {
+    public S2CPlayDisconnectPacket(final TextComponent reason) {
         super(reason);
     }
 

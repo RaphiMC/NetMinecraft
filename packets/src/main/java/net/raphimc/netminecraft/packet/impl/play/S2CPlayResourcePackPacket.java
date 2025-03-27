@@ -17,7 +17,7 @@
  */
 package net.raphimc.netminecraft.packet.impl.play;
 
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.packet.impl.common.S2CResourcePackPacket;
 
 public class S2CPlayResourcePackPacket extends S2CResourcePackPacket {
@@ -25,7 +25,7 @@ public class S2CPlayResourcePackPacket extends S2CResourcePackPacket {
     public S2CPlayResourcePackPacket() {
     }
 
-    public S2CPlayResourcePackPacket(final String url, final String hash, final boolean required, final ATextComponent message) {
+    public S2CPlayResourcePackPacket(final String url, final String hash, final boolean required, final TextComponent message) {
         super(url, hash, required, message);
     }
 

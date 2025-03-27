@@ -18,7 +18,7 @@
 package net.raphimc.netminecraft.packet.impl.login;
 
 import io.netty.buffer.ByteBuf;
-import net.lenni0451.mcstructs.text.ATextComponent;
+import net.lenni0451.mcstructs.text.TextComponent;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
@@ -26,12 +26,12 @@ import net.raphimc.netminecraft.packet.SerializerTypes;
 
 public class S2CLoginDisconnectPacket implements Packet {
 
-    public ATextComponent reason;
+    public TextComponent reason;
 
     public S2CLoginDisconnectPacket() {
     }
 
-    public S2CLoginDisconnectPacket(final ATextComponent reason) {
+    public S2CLoginDisconnectPacket(final TextComponent reason) {
         this.reason = reason;
     }
 
