@@ -1,3 +1,9 @@
+plugins {
+    id "java-library"
+    id "base.base-conventions"
+    id "netminecraft.publishing-conventions"
+}
+
 dependencies {
     api project(":core")
 }

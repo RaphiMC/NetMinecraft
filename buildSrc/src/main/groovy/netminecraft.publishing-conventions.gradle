@@ -1,0 +1,32 @@
+plugins {
+    id "base.publishing-conventions"
+    id "base.lenni0451-maven-publishing"
+}
+
+publishing {
+    publications {
+        mavenJava {
+            pom {
+                name = "NetMinecraft"
+                description = "Easy to use low-level networking library for Minecraft"
+                url = "https://github.com/RaphiMC/NetMinecraft"
+                licenses {
+                    license {
+                        name = "LGPL-3.0 License"
+                        url = "https://github.com/RaphiMC/NetMinecraft/blob/main/LICENSE"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "RK_01"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/RaphiMC/NetMinecraft.git"
+                    developerConnection = "scm:git:ssh://github.com/RaphiMC/NetMinecraft.git"
+                    url = "https://github.com/RaphiMC/NetMinecraft.git"
+                }
+            }
+        }
+    }
+}

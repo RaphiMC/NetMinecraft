@@ -1,3 +1,9 @@
+plugins {
+    id "java-library"
+    id "base.base-conventions"
+    id "netminecraft.publishing-conventions"
+}
+
 dependencies {
     api "io.netty:netty-all:4.2.0.Final"
     api "net.lenni0451.mcstructs:text:3.0.0"
