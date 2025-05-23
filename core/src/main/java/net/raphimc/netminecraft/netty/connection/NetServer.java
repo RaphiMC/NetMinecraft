@@ -22,7 +22,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import net.raphimc.netminecraft.util.ChannelType;
+import net.raphimc.netminecraft.util.EventLoops;
+import net.raphimc.netminecraft.util.TransportType;
 
 import java.net.SocketAddress;
 
@@ -36,10 +37,10 @@ public class NetServer {
         this.channelInitializer = channelInitializer;
     }
 
-    public void initialize(final ChannelType channelType, final ServerBootstrap bootstrap) {
+    public void initialize(final TransportType transportType, final ServerBootstrap bootstrap) {
         bootstrap
-                .group(channelType.serverParentEventLoopGroup().get(), channelType.serverChildEventLoopGroup().get())
-                .channel(channelType.tcpServerChannelClass())
+                .group(EventLoops.getServerParentEventLoop(transportType), EventLoops.getServerChildEventLoop(transportType))
+                .channel(transportType.tcpServerChannelClass())
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.TCP_NODELAY, true)
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
@@ -54,7 +55,7 @@ public class NetServer {
 
     public void bind(final SocketAddress address, final boolean blocking) {
         if (this.channelFuture == null) {
-            this.initialize(ChannelType.get(address), new ServerBootstrap());
+            this.initialize(TransportType.getBest(address), new ServerBootstrap());
         }
         this.getChannel().bind(address).syncUninterruptibly();
 
