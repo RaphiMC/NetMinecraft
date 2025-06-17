@@ -17,13 +17,16 @@
  */
 package net.raphimc.netminecraft.packet;
 
+import net.lenni0451.mcstructs.text.serializer.TextComponentCodec;
 import net.lenni0451.mcstructs.text.serializer.TextComponentSerializer;
 import net.raphimc.netminecraft.constants.MCVersion;
 
 public class SerializerTypes {
 
     public static TextComponentSerializer getTextComponentSerializer(final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_21_5) {
+        if (protocolVersion >= MCVersion.v1_21_6) {
+            return TextComponentCodec.V1_21_6.asSerializer();
+        } else if (protocolVersion >= MCVersion.v1_21_5) {
             return TextComponentSerializer.V1_21_5;
         } else if (protocolVersion >= MCVersion.v1_21_4) {
             return TextComponentSerializer.V1_21_4;
