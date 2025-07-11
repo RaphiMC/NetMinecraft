@@ -18,17 +18,23 @@
 package net.raphimc.netminecraft.netty.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.DecoderException;
 import net.raphimc.netminecraft.constants.MCPipeline;
+import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.PacketTypes;
+import net.raphimc.netminecraft.packet.registry.PacketRegistry;
 
 import java.util.List;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
+
+    private static final int MAX_UNCOMPRESSED_SIZE_1_7_2 = 1024 * 1024 * 2;
+    private static final int MAX_UNCOMPRESSED_SIZE_1_17_1 = 1024 * 1024 * 8;
 
     private final byte[] deflateBuffer = new byte[8192];
 
@@ -60,8 +66,9 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
                 if (uncompressedLength < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
                     throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is below server threshold of " + ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get());
                 }
-                if (uncompressedLength > 2097152) {
-                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is larger than protocol maximum of " + 2097152);
+                final int maxUncompressedSize = this.getMaxUncompressedSize(ctx.channel());
+                if (uncompressedLength > maxUncompressedSize) {
+                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is larger than protocol maximum of " + maxUncompressedSize);
                 }
 
                 final byte[] compressedData = new byte[in.readableBytes()];
@@ -88,6 +95,11 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
             PacketTypes.writeVarInt(out, 0);
             out.writeBytes(in);
         } else {
+            final int maxUncompressedSize = this.getMaxUncompressedSize(ctx.channel());
+            if (packetSize > maxUncompressedSize) {
+                throw new IllegalArgumentException("Packet too big (is " + packetSize + ", should be less than " + maxUncompressedSize + ")");
+            }
+
             final byte[] uncompressedData = new byte[packetSize];
             in.readBytes(uncompressedData);
             PacketTypes.writeVarInt(out, uncompressedData.length);
@@ -99,6 +111,17 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
             }
             this.deflater.reset();
         }
+    }
+
+    private int getMaxUncompressedSize(final Channel channel) {
+        int maxUncompressedSize = MAX_UNCOMPRESSED_SIZE_1_17_1;
+        final PacketRegistry packetRegistry = channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+        if (packetRegistry != null) {
+            if (packetRegistry.getProtocolVersion() < MCVersion.v1_17_1) {
+                maxUncompressedSize = MAX_UNCOMPRESSED_SIZE_1_7_2;
+            }
+        }
+        return maxUncompressedSize;
     }
 
 }
