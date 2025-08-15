@@ -56,6 +56,7 @@ public class DefaultPacketRegistry extends PacketRegistryImpl {
         this.registerPacket(MCPackets.C2S_CONFIG_KEEP_ALIVE, C2SConfigKeepAlivePacket::new);
         this.registerPacket(MCPackets.C2S_CONFIG_RESOURCE_PACK, C2SConfigResourcePackPacket::new);
         this.registerPacket(MCPackets.C2S_CONFIG_COOKIE_RESPONSE, C2SConfigCookieResponsePacket::new);
+        this.registerPacket(MCPackets.C2S_CONFIG_SELECT_KNOWN_PACKS, C2SConfigSelectKnownPacksPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_CUSTOM_PAYLOAD, S2CConfigCustomPayloadPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_DISCONNECT, S2CConfigDisconnectPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_FINISH_CONFIGURATION, S2CConfigFinishConfigurationPacket::new);
@@ -66,6 +67,7 @@ public class DefaultPacketRegistry extends PacketRegistryImpl {
         this.registerPacket(MCPackets.S2C_CONFIG_COOKIE_REQUEST, S2CConfigCookieRequestPacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_STORE_COOKIE, S2CConfigStoreCookiePacket::new);
         this.registerPacket(MCPackets.S2C_CONFIG_TRANSFER, S2CConfigTransferPacket::new);
+        this.registerPacket(MCPackets.S2C_CONFIG_SELECT_KNOWN_PACKS, S2CConfigSelectKnownPacksPacket::new);
 
         this.registerPacket(MCPackets.C2S_CONFIGURATION_ACKNOWLEDGED, C2SPlayConfigurationAcknowledgedPacket::new);
         this.registerPacket(MCPackets.C2S_RESOURCE_PACK, C2SPlayResourcePackPacket::new);
