@@ -30,26 +30,26 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.channel.unix.DomainSocketAddress;
-import io.netty.channel.uring.IoUringDatagramChannel;
-import io.netty.channel.uring.IoUringIoHandler;
-import io.netty.channel.uring.IoUringServerSocketChannel;
-import io.netty.channel.uring.IoUringSocketChannel;
+import io.netty.channel.uring.*;
 
 import java.net.SocketAddress;
 import java.util.function.Supplier;
 
 public enum TransportType {
 
-    NIO(NioSocketChannel.class, NioDatagramChannel.class, NioServerSocketChannel.class, NioDatagramChannel.class, NioIoHandler::newFactory),
-    EPOLL(EpollSocketChannel.class, EpollDatagramChannel.class, EpollServerSocketChannel.class, EpollDatagramChannel.class, EpollIoHandler::newFactory),
-    KQUEUE(KQueueSocketChannel.class, KQueueDatagramChannel.class, KQueueServerSocketChannel.class, KQueueDatagramChannel.class, KQueueIoHandler::newFactory),
-    IO_URING(IoUringSocketChannel.class, IoUringDatagramChannel.class, IoUringServerSocketChannel.class, IoUringDatagramChannel.class, IoUringIoHandler::newFactory),
-    LOCAL(LocalChannel.class, LocalChannel.class, LocalServerChannel.class, LocalServerChannel.class, LocalIoHandler::newFactory),
+    NIO(NioSocketChannel.class, NioDatagramChannel.class, NioServerSocketChannel.class, NioDatagramChannel.class, NioIoHandler::newFactory, true),
+    EPOLL(EpollSocketChannel.class, EpollDatagramChannel.class, EpollServerSocketChannel.class, EpollDatagramChannel.class, EpollIoHandler::newFactory, Epoll.isAvailable()),
+    KQUEUE(KQueueSocketChannel.class, KQueueDatagramChannel.class, KQueueServerSocketChannel.class, KQueueDatagramChannel.class, KQueueIoHandler::newFactory, KQueue.isAvailable()),
+    IO_URING(IoUringSocketChannel.class, IoUringDatagramChannel.class, IoUringServerSocketChannel.class, IoUringDatagramChannel.class, IoUringIoHandler::newFactory, IoUring.isAvailable()),
+    LOCAL(LocalChannel.class, LocalChannel.class, LocalServerChannel.class, LocalServerChannel.class, LocalIoHandler::newFactory, true),
 
-    UNIX_EPOLL(EpollDomainSocketChannel.class, EpollDomainDatagramChannel.class, EpollServerDomainSocketChannel.class, EpollDomainDatagramChannel.class, EpollIoHandler::newFactory),
-    UNIX_KQUEUE(KQueueDomainSocketChannel.class, KQueueDomainDatagramChannel.class, KQueueServerDomainSocketChannel.class, KQueueDomainDatagramChannel.class, KQueueIoHandler::newFactory),
-
+    UNIX_EPOLL(EpollDomainSocketChannel.class, EpollDomainDatagramChannel.class, EpollServerDomainSocketChannel.class, EpollDomainDatagramChannel.class, EpollIoHandler::newFactory, Epoll.isAvailable()),
+    UNIX_KQUEUE(KQueueDomainSocketChannel.class, KQueueDomainDatagramChannel.class, KQueueServerDomainSocketChannel.class, KQueueDomainDatagramChannel.class, KQueueIoHandler::newFactory, KQueue.isAvailable()),
+    UNIX_IO_URING(IoUringDomainSocketChannel.class, null, IoUringServerDomainSocketChannel.class, null, IoUringIoHandler::newFactory, IoUring.isAvailable()),
     ;
+
+    private static final TransportType[] BEST = {EPOLL, KQUEUE, IO_URING, NIO};
+    private static final TransportType[] BEST_UNIX = {UNIX_EPOLL, UNIX_KQUEUE, UNIX_IO_URING};
 
     public static TransportType getBest() {
         return getBest(false);
@@ -60,25 +60,16 @@ public enum TransportType {
     }
 
     public static TransportType getBest(final boolean unixAddress) {
-        if (Epoll.isAvailable()) {
-            if (unixAddress) {
-                return UNIX_EPOLL;
-            } else {
-                return EPOLL;
-            }
-        } else if (KQueue.isAvailable()) {
-            if (unixAddress) {
-                return UNIX_KQUEUE;
-            } else {
-                return KQUEUE;
-            }
-        } else {
-            if (unixAddress) {
-                throw new UnsupportedOperationException("Unix sockets are not supported on this platform");
-            }
+        return getBest(unixAddress ? BEST_UNIX : BEST);
+    }
 
-            return NIO;
+    public static TransportType getBest(final TransportType... transportTypes) {
+        for (TransportType transportType : transportTypes) {
+            if (transportType.isAvailable()) {
+                return transportType;
+            }
         }
+        throw new UnsupportedOperationException("No available transport types found");
     }
 
     private final Class<? extends Channel> tcpClientChannelClass;
@@ -86,13 +77,15 @@ public enum TransportType {
     private final Class<? extends ServerChannel> tcpServerChannelClass;
     private final Class<? extends Channel> udpServerChannelClass;
     private final Supplier<? extends IoHandlerFactory> ioHandlerFactorySupplier;
+    private final boolean available;
 
-    TransportType(final Class<? extends Channel> tcpClientChannelClass, final Class<? extends Channel> udpClientChannelClass, final Class<? extends ServerChannel> tcpServerChannelClass, final Class<? extends Channel> udpServerChannelClass, final Supplier<? extends IoHandlerFactory> ioHandlerFactorySupplier) {
+    TransportType(final Class<? extends Channel> tcpClientChannelClass, final Class<? extends Channel> udpClientChannelClass, final Class<? extends ServerChannel> tcpServerChannelClass, final Class<? extends Channel> udpServerChannelClass, final Supplier<? extends IoHandlerFactory> ioHandlerFactorySupplier, final boolean available) {
         this.tcpClientChannelClass = tcpClientChannelClass;
         this.udpClientChannelClass = udpClientChannelClass;
         this.tcpServerChannelClass = tcpServerChannelClass;
         this.udpServerChannelClass = udpServerChannelClass;
         this.ioHandlerFactorySupplier = ioHandlerFactorySupplier;
+        this.available = available;
     }
 
     public Class<? extends Channel> tcpClientChannelClass() {
@@ -113,6 +106,10 @@ public enum TransportType {
 
     public Supplier<? extends IoHandlerFactory> ioHandlerFactorySupplier() {
         return this.ioHandlerFactorySupplier;
+    }
+
+    public boolean isAvailable() {
+        return this.available;
     }
 
 }
