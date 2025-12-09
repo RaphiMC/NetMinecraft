@@ -26,7 +26,7 @@ public class SerializerTypes {
     public static TextComponentSerializer getTextComponentSerializer(final int protocolVersion) {
         if (protocolVersion >= MCVersion.v1_21_9) {
             return TextComponentCodec.V1_21_9.asSerializer();
-        } if (protocolVersion >= MCVersion.v1_21_6) {
+        } else if (protocolVersion >= MCVersion.v1_21_6) {
             return TextComponentCodec.V1_21_6.asSerializer();
         } else if (protocolVersion >= MCVersion.v1_21_5) {
             return TextComponentSerializer.V1_21_5;
