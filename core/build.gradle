@@ -5,18 +5,18 @@ plugins {
 }
 
 dependencies {
-    api "io.netty:netty-handler:4.2.7.Final"
-    api "io.netty:netty-transport-native-epoll:4.2.7.Final"
+    api "io.netty:netty-handler:4.2.8.Final"
+    api "io.netty:netty-transport-native-epoll:4.2.8.Final"
     ["linux-aarch_64", "linux-riscv64", "linux-x86_64"].each {
-        api "io.netty:netty-transport-native-epoll:4.2.7.Final:$it"
+        api "io.netty:netty-transport-native-epoll:4.2.8.Final:$it"
     }
-    api "io.netty:netty-transport-native-kqueue:4.2.7.Final"
+    api "io.netty:netty-transport-native-kqueue:4.2.8.Final"
     ["osx-aarch_64", "osx-x86_64"].each {
-        api "io.netty:netty-transport-native-kqueue:4.2.7.Final:$it"
+        api "io.netty:netty-transport-native-kqueue:4.2.8.Final:$it"
     }
-    api "io.netty:netty-transport-native-io_uring:4.2.7.Final"
+    api "io.netty:netty-transport-native-io_uring:4.2.8.Final"
     ["linux-aarch_64", "linux-riscv64", "linux-x86_64"].each {
-        api "io.netty:netty-transport-native-io_uring:4.2.7.Final:$it"
+        api "io.netty:netty-transport-native-io_uring:4.2.8.Final:$it"
     }
     api "net.lenni0451.mcstructs:text:3.2.1"
 }
