@@ -20,6 +20,7 @@ package net.raphimc.netminecraft.netty.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.util.Attribute;
 import net.raphimc.netminecraft.constants.MCPipeline;
 import net.raphimc.netminecraft.packet.Packet;
 import net.raphimc.netminecraft.packet.PacketTypes;
@@ -29,9 +30,17 @@ import java.util.List;
 
 public class PacketCodec extends ByteToMessageCodec<Packet> {
 
+    private Attribute<PacketRegistry> packetRegistryAttribute;
+
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        final PacketRegistry packetRegistry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+    public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
+        super.handlerAdded(ctx);
+        this.packetRegistryAttribute = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY);
+    }
+
+    @Override
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
+        final PacketRegistry packetRegistry = this.packetRegistryAttribute.get();
         if (packetRegistry == null) {
             out.add(in.readBytes(in.readableBytes()));
             return;
@@ -45,8 +54,8 @@ public class PacketCodec extends ByteToMessageCodec<Packet> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Packet in, ByteBuf out) {
-        final PacketRegistry packetRegistry = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+    protected void encode(final ChannelHandlerContext ctx, final Packet in, final ByteBuf out) {
+        final PacketRegistry packetRegistry = this.packetRegistryAttribute.get();
         if (packetRegistry == null) {
             throw new IllegalStateException("Can't write Packet without a packet registry");
         }

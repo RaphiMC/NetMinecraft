@@ -20,6 +20,7 @@ package net.raphimc.netminecraft.netty.codec;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.Attribute;
 import io.netty.util.concurrent.ScheduledFuture;
 import net.raphimc.netminecraft.constants.MCPipeline;
 
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class FlushConsolidationHandler extends ChannelDuplexHandler {
 
     private final int flushIntervalMs;
+    private Attribute<Integer> ppsThresholdAttribute;
     private ScheduledFuture<?> resetTask;
 
     private int flushCount;
@@ -45,10 +47,11 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         super.handlerAdded(ctx);
+        this.ppsThresholdAttribute = ctx.channel().attr(MCPipeline.FLUSH_CONSOLIDATION_PPS_THRESHOLD_ATTRIBUTE_KEY);
         this.resetTask = ctx.executor().scheduleAtFixedRate(() -> {
             this.lastFlushCount = this.flushCount;
             this.flushCount = 0;
-            if (!this.shouldConsolidate(ctx)) {
+            if (!this.shouldConsolidate()) {
                 this.stopConsolidation(ctx);
             }
         }, 0, 1, TimeUnit.SECONDS);
@@ -67,7 +70,7 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
     @Override
     public void flush(final ChannelHandlerContext ctx) throws Exception {
         this.flushCount++;
-        if (this.shouldConsolidate(ctx)) {
+        if (this.shouldConsolidate()) {
             if (this.flushTask == null) {
                 this.flushTask = ctx.executor().scheduleAtFixedRate(ctx::flush, this.flushIntervalMs, this.flushIntervalMs, TimeUnit.MILLISECONDS);
             }
@@ -104,8 +107,8 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
         super.channelWritabilityChanged(ctx);
     }
 
-    private boolean shouldConsolidate(final ChannelHandlerContext ctx) {
-        final int threshold = ctx.channel().attr(MCPipeline.FLUSH_CONSOLIDATION_PPS_THRESHOLD_ATTRIBUTE_KEY).get();
+    private boolean shouldConsolidate() {
+        final int threshold = this.ppsThresholdAttribute.get();
         return this.flushCount >= threshold || this.lastFlushCount >= threshold;
     }
 

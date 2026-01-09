@@ -18,10 +18,10 @@
 package net.raphimc.netminecraft.netty.codec;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.handler.codec.DecoderException;
+import io.netty.util.Attribute;
 import net.raphimc.netminecraft.constants.MCPipeline;
 import net.raphimc.netminecraft.constants.MCVersion;
 import net.raphimc.netminecraft.packet.PacketTypes;
@@ -37,38 +37,53 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
     private static final int MAX_UNCOMPRESSED_SIZE_1_17_1 = 1024 * 1024 * 8;
 
     private final byte[] deflateBuffer = new byte[8192];
+    private Attribute<Integer> thresholdAttribute;
+    private Attribute<PacketRegistry> packetRegistryAttribute;
 
     // only allocated if needed
     private Deflater deflater;
     private Inflater inflater;
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        super.handlerRemoved(ctx);
-
-        if (this.inflater != null) this.inflater.end();
-        if (this.deflater != null) this.deflater.end();
+    public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
+        super.handlerAdded(ctx);
+        this.thresholdAttribute = ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY);
+        this.packetRegistryAttribute = ctx.channel().attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY);
     }
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get() < 0) {
+    public void handlerRemoved(final ChannelHandlerContext ctx) throws Exception {
+        super.handlerRemoved(ctx);
+        if (this.inflater != null) {
+            this.inflater.end();
+        }
+        if (this.deflater != null) {
+            this.deflater.end();
+        }
+    }
+
+    @Override
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
+        final int threshold = this.thresholdAttribute.get();
+        if (threshold < 0) {
             out.add(in.readBytes(in.readableBytes()));
             return;
         }
-        if (this.inflater == null) this.inflater = new Inflater();
 
         if (in.readableBytes() != 0) {
             final int uncompressedLength = PacketTypes.readVarInt(in);
             if (uncompressedLength == 0) {
                 out.add(in.readBytes(in.readableBytes()));
             } else {
-                if (uncompressedLength < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
-                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is below server threshold of " + ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get());
+                if (uncompressedLength < threshold) {
+                    throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is below server threshold of " + threshold);
                 }
-                final int maxUncompressedSize = this.getMaxUncompressedSize(ctx.channel());
+                final int maxUncompressedSize = this.getMaxUncompressedSize();
                 if (uncompressedLength > maxUncompressedSize) {
                     throw new DecoderException("Badly compressed packet - size of " + uncompressedLength + " is larger than protocol maximum of " + maxUncompressedSize);
+                }
+                if (this.inflater == null) {
+                    this.inflater = new Inflater();
                 }
 
                 final byte[] compressedData = new byte[in.readableBytes()];
@@ -83,21 +98,24 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
-        if (ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get() < 0) {
+    protected void encode(final ChannelHandlerContext ctx, final ByteBuf in, final ByteBuf out) {
+        final int threshold = this.thresholdAttribute.get();
+        if (threshold < 0) {
             out.writeBytes(in);
             return;
         }
-        if (this.deflater == null) this.deflater = new Deflater();
 
         final int packetSize = in.readableBytes();
-        if (packetSize < ctx.channel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).get()) {
+        if (packetSize < threshold) {
             PacketTypes.writeVarInt(out, 0);
             out.writeBytes(in);
         } else {
-            final int maxUncompressedSize = this.getMaxUncompressedSize(ctx.channel());
+            final int maxUncompressedSize = this.getMaxUncompressedSize();
             if (packetSize > maxUncompressedSize) {
                 throw new IllegalArgumentException("Packet too big (is " + packetSize + ", should be less than " + maxUncompressedSize + ")");
+            }
+            if (this.deflater == null) {
+                this.deflater = new Deflater();
             }
 
             final byte[] uncompressedData = new byte[packetSize];
@@ -113,9 +131,9 @@ public class PacketCompressor extends ByteToMessageCodec<ByteBuf> {
         }
     }
 
-    private int getMaxUncompressedSize(final Channel channel) {
+    private int getMaxUncompressedSize() {
         int maxUncompressedSize = MAX_UNCOMPRESSED_SIZE_1_17_1;
-        final PacketRegistry packetRegistry = channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).get();
+        final PacketRegistry packetRegistry = this.packetRegistryAttribute.get();
         if (packetRegistry != null) {
             if (packetRegistry.getProtocolVersion() < MCVersion.v1_17_1) {
                 maxUncompressedSize = MAX_UNCOMPRESSED_SIZE_1_7_2;

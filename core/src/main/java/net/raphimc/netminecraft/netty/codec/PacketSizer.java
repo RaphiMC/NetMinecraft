@@ -29,7 +29,7 @@ import java.util.List;
 public class PacketSizer extends ByteToMessageCodec<ByteBuf> {
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
+    protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) {
         in.markReaderIndex();
         final byte[] bytes = new byte[3];
 
@@ -59,7 +59,7 @@ public class PacketSizer extends ByteToMessageCodec<ByteBuf> {
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
+    protected void encode(final ChannelHandlerContext ctx, final ByteBuf in, final ByteBuf out) {
         final int packetLength = in.readableBytes();
         final int varIntLength = PacketTypes.getVarIntLength(packetLength);
         if (varIntLength > 3) {
