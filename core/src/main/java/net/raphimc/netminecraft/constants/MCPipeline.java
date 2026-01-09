@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 public class MCPipeline {
 
     // Handler names
+    public static final String FLUSH_CONSOLIDATION_HANDLER_NAME = "flush-consolidation";
     public static final String ENCRYPTION_HANDLER_NAME = "encryption";
     public static final String SIZER_HANDLER_NAME = "sizer";
     public static final String FLOW_CONTROL_HANDLER_NAME = "flow-control";
@@ -39,11 +40,13 @@ public class MCPipeline {
     public static final String HANDLER_HANDLER_NAME = "handler";
 
     // Keys to change handler settings
-    public static final AttributeKey<Integer> COMPRESSION_THRESHOLD_ATTRIBUTE_KEY = AttributeKey.valueOf("compression_threshold");
+    public static final AttributeKey<Integer> FLUSH_CONSOLIDATION_PPS_THRESHOLD_ATTRIBUTE_KEY = AttributeKey.valueOf("flush-consolidation-pps-threshold");
     public static final AttributeKey<AESEncryption> ENCRYPTION_ATTRIBUTE_KEY = AttributeKey.valueOf("encryption");
-    public static final AttributeKey<PacketRegistry> PACKET_REGISTRY_ATTRIBUTE_KEY = AttributeKey.valueOf("packet_registry");
+    public static final AttributeKey<Integer> COMPRESSION_THRESHOLD_ATTRIBUTE_KEY = AttributeKey.valueOf("compression-threshold");
+    public static final AttributeKey<PacketRegistry> PACKET_REGISTRY_ATTRIBUTE_KEY = AttributeKey.valueOf("packet-registry");
 
     // Default handlers
+    public static final Supplier<ChannelHandler> DEFAULT_FLUSH_CONSOLIDATION_HANDLER = FlushConsolidationHandler::new;
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_ENCRYPTION_HANDLER = PacketCryptor::new;
     public static final Supplier<ByteToMessageCodec<ByteBuf>> DEFAULT_SIZER_HANDLER = PacketSizer::new;
     public static final Supplier<ChannelHandler> DEFAULT_FLOW_CONTROL_HANDLER = NoReadFlowControlHandler::new;
@@ -53,6 +56,7 @@ public class MCPipeline {
     public static final Supplier<ByteToMessageCodec<ByteBuf>> OPTIMIZED_SIZER_HANDLER = OptimizedPacketSizer::new;
 
     // Handlers which are getting used
+    public static Supplier<ChannelHandler> FLUSH_CONSOLIDATION_HANDLER;
     public static Supplier<ByteToMessageCodec<ByteBuf>> ENCRYPTION_HANDLER;
     public static Supplier<ByteToMessageCodec<ByteBuf>> SIZER_HANDLER;
     public static Supplier<ChannelHandler> FLOW_CONTROL_HANDLER;
@@ -64,6 +68,7 @@ public class MCPipeline {
     }
 
     public static void useDefaultPipeline() {
+        FLUSH_CONSOLIDATION_HANDLER = DEFAULT_FLUSH_CONSOLIDATION_HANDLER;
         ENCRYPTION_HANDLER = DEFAULT_ENCRYPTION_HANDLER;
         SIZER_HANDLER = DEFAULT_SIZER_HANDLER;
         FLOW_CONTROL_HANDLER = DEFAULT_FLOW_CONTROL_HANDLER;

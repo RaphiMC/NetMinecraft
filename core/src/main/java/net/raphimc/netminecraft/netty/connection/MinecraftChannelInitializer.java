@@ -34,10 +34,12 @@ public class MinecraftChannelInitializer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(final Channel channel) {
+        channel.attr(MCPipeline.FLUSH_CONSOLIDATION_PPS_THRESHOLD_ATTRIBUTE_KEY).set(2500);
         channel.attr(MCPipeline.ENCRYPTION_ATTRIBUTE_KEY).set(null);
         channel.attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).set(-1);
         channel.attr(MCPipeline.PACKET_REGISTRY_ATTRIBUTE_KEY).set(null);
 
+        channel.pipeline().addLast(MCPipeline.FLUSH_CONSOLIDATION_HANDLER_NAME, MCPipeline.FLUSH_CONSOLIDATION_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.ENCRYPTION_HANDLER_NAME, MCPipeline.ENCRYPTION_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.SIZER_HANDLER_NAME, MCPipeline.SIZER_HANDLER.get());
         channel.pipeline().addLast(MCPipeline.FLOW_CONTROL_HANDLER_NAME, MCPipeline.FLOW_CONTROL_HANDLER.get());
