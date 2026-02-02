@@ -32,16 +32,17 @@ import java.util.UUID;
 
 public class PacketTypes {
 
-    private static final int MAX_VAR_INT_LENGTH = 5;
+    private static final int MAX_VAR_INT_BYTES = 5;
+    private static final int MAX_VAR_LONG_BYTES = 10;
 
     public static int getVarIntLength(final int value) {
-        for (int i = 1; i < MAX_VAR_INT_LENGTH; ++i) {
+        for (int i = 1; i < MAX_VAR_INT_BYTES; ++i) {
             if ((value & -1 << i * 7) == 0) {
                 return i;
             }
         }
 
-        return MAX_VAR_INT_LENGTH;
+        return MAX_VAR_INT_BYTES;
     }
 
     public static int readVarInt(final ByteBuf byteBuf) {
@@ -51,10 +52,9 @@ public class PacketTypes {
         do {
             in = byteBuf.readByte();
             value |= (in & 127) << (bytes++ * 7);
-            if (bytes > MAX_VAR_INT_LENGTH) {
+            if (bytes > MAX_VAR_INT_BYTES) {
                 throw new RuntimeException("VarInt too big");
             }
-
         } while ((in & 128) == 128);
 
         return value;
@@ -67,6 +67,30 @@ public class PacketTypes {
         }
 
         return byteBuf.writeByte(value);
+    }
+
+    public static long readVarLong(final ByteBuf byteBuf) {
+        long value = 0;
+        int bytes = 0;
+        byte in;
+        do {
+            in = byteBuf.readByte();
+            value |= (long) (in & 127) << (bytes++ * 7);
+            if (bytes > MAX_VAR_LONG_BYTES) {
+                throw new RuntimeException("VarLong too big");
+            }
+        } while ((in & 128) == 128);
+
+        return value;
+    }
+
+    public static ByteBuf writeVarLong(final ByteBuf byteBuf, long value) {
+        while ((value & -128L) != 0L) {
+            byteBuf.writeByte((int) (value & 127L) | 128);
+            value >>>= 7;
+        }
+
+        return byteBuf.writeByte((int) value);
     }
 
     public static String readString(final ByteBuf byteBuf, final int maxLength) {
