@@ -24,7 +24,9 @@ import net.raphimc.netminecraft.constants.MCVersion;
 public class SerializerTypes {
 
     public static TextComponentSerializer getTextComponentSerializer(final int protocolVersion) {
-        if (protocolVersion >= MCVersion.v1_21_9) {
+        if (protocolVersion >= MCVersion.v26_1) {
+            return TextComponentCodec.V26_1.asSerializer();
+        } else if (protocolVersion >= MCVersion.v1_21_9) {
             return TextComponentCodec.V1_21_9.asSerializer();
         } else if (protocolVersion >= MCVersion.v1_21_6) {
             return TextComponentCodec.V1_21_6.asSerializer();
