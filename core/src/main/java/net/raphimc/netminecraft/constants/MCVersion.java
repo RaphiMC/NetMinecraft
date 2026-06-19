@@ -72,6 +72,7 @@ public class MCVersion {
     public static final int v1_21_9 = 773;
     public static final int v1_21_11 = 774;
     public static final int v26_1 = 775;
+    public static final int v26_2 = 776;
 
     public static final Map<Integer, String> ALL_VERSIONS = new LinkedHashMap<>();
 
@@ -126,6 +127,7 @@ public class MCVersion {
         ALL_VERSIONS.put(v1_21_9, "v1_21_9");
         ALL_VERSIONS.put(v1_21_11, "v1_21_11");
         ALL_VERSIONS.put(v26_1, "v26_1");
+        ALL_VERSIONS.put(v26_2, "v26_2");
     }
 
 }

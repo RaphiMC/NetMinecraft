@@ -36,6 +36,8 @@ public class S2CLoginGameProfilePacket implements Packet {
 
     public boolean strictErrorHandling;
 
+    public UUID sessionId;
+
     public S2CLoginGameProfilePacket() {
     }
 
@@ -54,6 +56,11 @@ public class S2CLoginGameProfilePacket implements Packet {
         this.strictErrorHandling = strictErrorHandling;
     }
 
+    public S2CLoginGameProfilePacket(final UUID uuid, final String name, final List<String[]> properties, final boolean strictErrorHandling, final UUID sessionId) {
+        this(uuid, name, properties, strictErrorHandling);
+        this.sessionId = sessionId;
+    }
+
     @Override
     public void read(final ByteBuf byteBuf, final int protocolVersion) {
         if (protocolVersion <= MCVersion.v1_7_2) {
@@ -61,7 +68,7 @@ public class S2CLoginGameProfilePacket implements Packet {
         } else if (protocolVersion <= MCVersion.v1_15_2) {
             this.uuid = UUID.fromString(PacketTypes.readString(byteBuf, 36));
         } else {
-            this.uuid = this.uuidFromIntArray(new int[]{byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt(), byteBuf.readInt()});
+            this.uuid = PacketTypes.readUuid(byteBuf);
         }
         this.name = PacketTypes.readString(byteBuf, 16);
         if (protocolVersion >= MCVersion.v1_19) {
@@ -80,6 +87,9 @@ public class S2CLoginGameProfilePacket implements Packet {
         if (protocolVersion >= MCVersion.v1_20_5 && protocolVersion <= MCVersion.v1_21) {
             this.strictErrorHandling = byteBuf.readBoolean();
         }
+        if (protocolVersion >= MCVersion.v26_2) {
+            this.sessionId = PacketTypes.readUuid(byteBuf);
+        }
     }
 
     @Override
@@ -89,7 +99,7 @@ public class S2CLoginGameProfilePacket implements Packet {
         } else if (protocolVersion <= MCVersion.v1_15_2) {
             PacketTypes.writeString(byteBuf, this.uuid == null ? "" : this.uuid.toString());
         } else {
-            for (int i : this.uuidToIntArray(this.uuid)) byteBuf.writeInt(i);
+            PacketTypes.writeUuid(byteBuf, this.uuid);
         }
         PacketTypes.writeString(byteBuf, this.name);
         if (protocolVersion >= MCVersion.v1_19) {
@@ -106,19 +116,9 @@ public class S2CLoginGameProfilePacket implements Packet {
         if (protocolVersion >= MCVersion.v1_20_5 && protocolVersion <= MCVersion.v1_21) {
             byteBuf.writeBoolean(this.strictErrorHandling);
         }
-    }
-
-
-    protected UUID uuidFromIntArray(final int[] ints) {
-        return new UUID((long) ints[0] << 32 | ((long) ints[1] & 0xFFFFFFFFL), (long) ints[2] << 32 | ((long) ints[3] & 0xFFFFFFFFL));
-    }
-
-    protected int[] uuidToIntArray(final UUID uuid) {
-        return bitsToIntArray(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits());
-    }
-
-    protected int[] bitsToIntArray(final long long1, final long long2) {
-        return new int[]{(int) (long1 >> 32), (int) long1, (int) (long2 >> 32), (int) long2};
+        if (protocolVersion >= MCVersion.v26_2) {
+            PacketTypes.writeUuid(byteBuf, this.sessionId);
+        }
     }
 
 }
