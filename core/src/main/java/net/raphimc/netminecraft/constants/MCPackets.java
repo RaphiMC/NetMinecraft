@@ -17,8 +17,9 @@
  */
 package net.raphimc.netminecraft.constants;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static net.raphimc.netminecraft.constants.ConnectionState.*;
 import static net.raphimc.netminecraft.constants.MCVersion.*;
@@ -348,24 +349,71 @@ public enum MCPackets {
     ;
 
 
-    private final ConnectionState state;
-    private final PacketDirection direction;
-    private final Map<Integer, Integer> packetIds;
-    private final Integer staticId;
+    private static final int DIRECTION_COUNT = PacketDirection.values().length;
+    private static final int LOOKUP_SIZE = ConnectionState.values().length * DIRECTION_COUNT;
 
-    MCPackets(final ConnectionState state, final PacketDirection direction, final int... packetIds) {
-        if (packetIds.length == 1) {
-            this.staticId = packetIds[0];
-        } else {
-            this.staticId = null;
-            if (packetIds.length % 2 != 0) throw new IllegalStateException("Packet id count has to be a multiple of 2");
+    /**
+     * The packets of a connection state and packet direction, indexed by {@link #lookupIndex}.
+     */
+    private static final MCPackets[][] PACKETS_BY_STATE_AND_DIRECTION;
+    /**
+     * The ids of all packets for a given protocol version, indexed by protocol version and packet ordinal.
+     * Unknown protocol versions are null.
+     */
+    private static final int[][] IDS_BY_VERSION;
+
+    static {
+        final MCPackets[] packets = values();
+
+        // Prefill with lists, then add packets
+        final List<List<MCPackets>> packetsByStateAndDirection = new ArrayList<>();
+        for (int i = 0; i < LOOKUP_SIZE; i++) {
+            packetsByStateAndDirection.add(new ArrayList<>());
+        }
+        for (final MCPackets packet : packets) {
+            packetsByStateAndDirection.get(lookupIndex(packet.state, packet.direction)).add(packet);
+        }
+        // Add to the array
+        PACKETS_BY_STATE_AND_DIRECTION = new MCPackets[LOOKUP_SIZE][];
+        for (int i = 0; i < LOOKUP_SIZE; i++) {
+            PACKETS_BY_STATE_AND_DIRECTION[i] = packetsByStateAndDirection.get(i).toArray(new MCPackets[0]);
         }
 
+        // Fill ids by version
+        final Integer highestVersion = Collections.max(ALL_VERSIONS.keySet());
+        IDS_BY_VERSION = new int[highestVersion + 1][];
+        for (final int protocolVersion : ALL_VERSIONS.keySet()) {
+            final int[] ids = new int[packets.length];
+            for (int i = 0; i < packets.length; i++) {
+                ids[i] = packets[i].calculateId(protocolVersion);
+            }
+            IDS_BY_VERSION[protocolVersion] = ids;
+        }
+    }
+
+    private final ConnectionState state;
+    private final PacketDirection direction;
+    private final int staticId;
+    /**
+     * The declared packet ids and the protocol versions they were introduced in. Empty if the packet has a static id.
+     */
+    private final VersionedId[] versionedIds;
+
+    MCPackets(final ConnectionState state, final PacketDirection direction, final int... packetIds) {
         this.state = state;
         this.direction = direction;
-        this.packetIds = new HashMap<>();
 
-        if (packetIds.length != 1) this.putVersions(packetIds);
+        if (packetIds.length == 1) {
+            this.staticId = packetIds[0];
+            this.versionedIds = new VersionedId[0];
+        } else {
+            if (packetIds.length % 2 != 0) throw new IllegalStateException("Packet id count has to be a multiple of 2");
+            this.staticId = -1;
+            this.versionedIds = new VersionedId[packetIds.length / 2];
+            for (int i = 0; i < this.versionedIds.length; i++) {
+                this.versionedIds[i] = new VersionedId(packetIds[i * 2], packetIds[i * 2 + 1]);
+            }
+        }
     }
 
     public ConnectionState getState() {
@@ -377,28 +425,48 @@ public enum MCPackets {
     }
 
     public int getId(final int protocolVersion) {
-        if (this.staticId != null) return this.staticId;
-        return this.packetIds.getOrDefault(protocolVersion, -1);
-    }
-
-    private void putVersions(final int[] packetIds) {
-        Map<Integer, Integer> ids = new HashMap<>();
-        for (int i = 0; i < packetIds.length; i += 2) ids.put(packetIds[i], packetIds[i + 1]);
-        int lastId = -1;
-        for (Integer version : MCVersion.ALL_VERSIONS.keySet()) {
-            Integer packetId = ids.get(version);
-            if (packetId != null) lastId = packetId;
-            this.packetIds.put(version, lastId);
-        }
+        if (this.staticId != -1) return this.staticId;
+        if (protocolVersion < 0 || protocolVersion >= IDS_BY_VERSION.length) return -1;
+        final int[] ids = IDS_BY_VERSION[protocolVersion];
+        return ids == null ? -1 : ids[this.ordinal()];
     }
 
     public static MCPackets getPacket(final ConnectionState state, final PacketDirection direction, final int protocolVersion, final int packetId) {
-        for (MCPackets packet : MCPackets.values()) {
-            if (packet.getState() != state) continue;
-            if (packet.getDirection() != direction) continue;
+        for (final MCPackets packet : PACKETS_BY_STATE_AND_DIRECTION[lookupIndex(state, direction)]) {
             if (packet.getId(protocolVersion) == packetId) return packet;
         }
         return null;
+    }
+
+    private static int lookupIndex(final ConnectionState state, final PacketDirection direction) {
+        return state.ordinal() * DIRECTION_COUNT + direction.ordinal();
+    }
+
+    /**
+     * @return newest id up to the given protocol version, or -1 if not found
+     */
+    private int calculateId(final int protocolVersion) {
+        if (this.staticId != -1) return this.staticId;
+
+        int id = -1;
+        int newestVersion = -1;
+        for (final VersionedId versionedId : this.versionedIds) {
+            if (versionedId.protocolVersion <= protocolVersion && versionedId.protocolVersion >= newestVersion) {
+                newestVersion = versionedId.protocolVersion;
+                id = versionedId.packetId;
+            }
+        }
+        return id;
+    }
+
+    private static final class VersionedId {
+        private final int protocolVersion;
+        private final int packetId;
+
+        private VersionedId(final int protocolVersion, final int packetId) {
+            this.protocolVersion = protocolVersion;
+            this.packetId = packetId;
+        }
     }
 
 }
